@@ -23,7 +23,7 @@ Shader "Custom/PlanetShader"
         _Ice ("Ice Amount", Range(0,1)) = 0
         [Space(20)]
         [Header(Atmosphere)]
-        _AtmoCol ("Atmosphere Colour", Color) = (1,1,1,1)
+        [HDR] _AtmoCol ("Atmosphere Colour", Color) = (1,1,1,1)
         _AtmoPow ("Atmosphere Power", Range(1,10)) = 5
         _Atmosphere ("Atmosphere Amount", Range(0,1)) = 1
         [Space(20)]
@@ -51,7 +51,7 @@ Shader "Custom/PlanetShader"
         cull back
 
         CGPROGRAM
-        #pragma surface surf PlanetSurface fullforwardshadows noambient noshadow noforwardadd nolightmap novertexlight
+        #pragma surface surf PlanetSurface noambient noshadow noforwardadd nolightmap
         #pragma target 3.0
 
 
