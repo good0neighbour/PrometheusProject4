@@ -189,7 +189,7 @@ Shader "Custom/PlanetShader"
             fixed atmo = pow(saturate(1 - dot(s.Normal, viewDir)), _AtmoPow);
 
             // Planet colour
-            result.rgb = _AtmoCol.rgb * _Atmosphere * 3 * atmo // Atmosphere
+            result.rgb = _AtmoCol.rgb * _Atmosphere * atmo // Atmosphere
                 + (s.Albedo.rgb // Surface
                 + saturate(s.SurfaceData.z - s.SurfaceData.x) // Water specular
                 * _WaterSpeCol.rgb

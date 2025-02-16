@@ -19,24 +19,23 @@ Shader "Custom/ImageShader"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma alpha:fade
 
             #include "UnityCG.cginc"
 
             struct appdata
             {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
+                fixed4 vertex : POSITION;
+                fixed2 uv : TEXCOORD0;
             };
 
             struct v2f
             {
-                float2 uv : TEXCOORD0;
-                float4 vertex : SV_POSITION;
+                fixed2 uv : TEXCOORD0;
+                fixed4 vertex : SV_POSITION;
             };
 
             sampler2D _MainTex;
-            float4 _MainTex_ST;
+            fixed4 _MainTex_ST;
             fixed4 _Colour;
 
             v2f vert (appdata v)

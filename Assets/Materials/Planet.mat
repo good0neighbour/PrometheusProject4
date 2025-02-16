@@ -95,7 +95,7 @@ Material:
     - _GrassCont: 20
     - _GrassLati: 0.3
     - _GrassPow: 10
-    - _Ice: 0
+    - _Ice: 0.248
     - _Metallic: 0
     - _Mode: 0
     - _Night: 1
@@ -119,7 +119,7 @@ Material:
     - _WaterSpelimit: 0.1
     - _ZWrite: 1
     m_Colors:
-    - _AtmoCol: {r: 1.1215687, g: 1.6470588, b: 2, a: 1}
+    - _AtmoCol: {r: 2.2431371, g: 3.2941175, b: 3.9999998, a: 1}
     - _AtmoSpeCol: {r: 0.8352941, g: 0.9372549, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
