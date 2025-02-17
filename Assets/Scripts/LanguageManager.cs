@@ -44,12 +44,12 @@ public class LanguageManager
     /// <summary>
     /// Applies language setting to word on current scene. It should be called only once at the begining of a scene.
     /// </summary>
-    public void LanguageInitialize(LanguageType language)
+    public void LanguageInitialize(string language)
     {
         // UI language setting
-        string[] words = LoadUILanguage(LanguageType.Korean);
+        string[] words = LoadUILanguage("Korean");
         _translators.Clear();
-        foreach (LanguageTranslator laTr in GameObject.FindObjectsByType<LanguageTranslator>(FindObjectsSortMode.None))
+        foreach (LanguageTranslator laTr in GameObject.FindObjectsByType<LanguageTranslator>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
             _translators.Add(laTr);
             laTr.SetWordIndex((ushort)Array.IndexOf(words, laTr.GetOriginalWord()));
@@ -64,13 +64,14 @@ public class LanguageManager
     /// Changes game language.
     /// </summary>
     /// <param name="language">Selected language</param>
-    public void LanguageChange(LanguageType language)
+    public void LanguageChange(string language)
     {
         // UI language change
         string[] words = LoadUILanguage(language);
+        TMP_FontAsset font = Resources.Load<TMP_FontAsset>($"Fonts/Font{language}");
         foreach (LanguageTranslator laTr in _translators)
         {
-            laTr.SetUIWord(words[laTr.GetWordIndex()]);
+            laTr.SetUIWord(words[laTr.GetWordIndex()], font);
         }
 
         // On language change
@@ -100,9 +101,9 @@ public class LanguageManager
 
     /* ==================== Private Methods ==================== */
 
-    private string[] LoadUILanguage(LanguageType language)
+    private string[] LoadUILanguage(string language)
     {
-        return JsonUtility.FromJson<LanguageJson>(Resources.Load($"{language.ToString()}UI").ToString()).Words;
+        return JsonUtility.FromJson<LanguageJson>(Resources.Load($"Languages/{language}UI").ToString()).Words;
     }
 
 

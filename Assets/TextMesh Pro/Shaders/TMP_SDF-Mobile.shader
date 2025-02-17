@@ -163,7 +163,7 @@ SubShader {
 			opacity = 1.0;
 			#endif
 
-			fixed4 faceColor = fixed4(input.color.rgb, opacity) * _FaceColor * 4;
+			fixed4 faceColor = fixed4(input.color.rgb, opacity) * _FaceColor * 3;  // Additional colour
 			faceColor.rgb *= faceColor.a;
 
 			fixed4 outlineColor = _OutlineColor;

@@ -2,6 +2,7 @@ public enum LanguageType
 {
     Korean,
     English,
+    Russian,
     Japanese,
     French
 }

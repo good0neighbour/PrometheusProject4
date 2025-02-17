@@ -1,11 +1,22 @@
-Exploration
-Add Exploration Equipment
-Research
-Culture
-Society
 City
-Exploration Progress
-Forces
-Menu
+Breathing Life
+Back
+Resume
 Area
+Menu
+Add Exploration Equipment
+Forces
+Water
+Culture
+Main Menu
+Language
+Research
+Temperature
+Magnetic Field
+Photosynthetic Life
+Exit
+Society
 Records
+Exploration Progress
+Atmospheric Pressure
+Exploration

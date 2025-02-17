@@ -46,8 +46,10 @@ public class LanguageTranslator : MonoBehaviour
     /// Sets word on UI.
     /// </summary>
     /// <param name="word">Translated word</param>
-    public void SetUIWord(string word)
+    public void SetUIWord(string word, TMP_FontAsset font)
     {
-        GetComponent<TextMeshProUGUI>().text = word;
+        TextMeshProUGUI tmp = GetComponent<TextMeshProUGUI>();
+        tmp.text = word;
+        tmp.font = font;
     }
 }

@@ -4,19 +4,21 @@ public class GameMenu : MonoBehaviour
 {
     /* ==================== Fields ==================== */
 
+    [SerializeField] private GameObject _languageScreen = null;
+
 
 
     /* ==================== Public Methods ==================== */
 
-    public void ButtonResume()
+    public void ButtonGameMenuActive(bool active)
     {
-        gameObject.SetActive(false);
+        gameObject.SetActive(active);
     }
 
 
-    public void ButtonSettings()
+    public void ButtonLanguage()
     {
-
+        _languageScreen.SetActive(true);
     }
 
 

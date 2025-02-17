@@ -90,7 +90,7 @@ public class LanguageCreator : EditorWindow
             for (byte i = 0; i < SceneManager.sceneCount; ++i)
             {
                 SceneManager.SetActiveScene(SceneManager.GetSceneAt(i));
-                translators = FindObjectsByType<LanguageTranslator>(FindObjectsSortMode.None);
+                translators = FindObjectsByType<LanguageTranslator>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 foreach (LanguageTranslator tra in translators)
                 {
                     wordGot = tra.GetComponent<TextMeshProUGUI>().text;
