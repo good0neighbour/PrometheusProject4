@@ -96,6 +96,7 @@ Material:
     - _GrassLati: 0.3
     - _GrassPow: 10
     - _Ice: 0.248
+    - _LightDir: 3.1415927
     - _Metallic: 0
     - _Mode: 0
     - _Night: 1
@@ -128,6 +129,6 @@ Material:
     - _LandColour: {r: 0.84313726, g: 0.70980394, b: 0.5372549, a: 1}
     - _NightCol: {r: 11.984316, g: 10.010428, b: 6.023529, a: 1}
     - _WaterCol: {r: 0, g: 0.31764707, b: 0.5372549, a: 1}
-    - _WaterSpeCol: {r: 0.050980393, g: 0.48235294, b: 0.6156863, a: 1}
+    - _WaterSpeCol: {r: 0.25490198, g: 0.462745, b: 0.4823529, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

@@ -42,6 +42,7 @@ Shader "Custom/PlanetShader"
         [Header(Planet Turning)]
         _SurfRotation ("Surface Rotation Multiply", Range(0,-1)) = -0.1
         _CloudRotation ("Cloud Rotation Multiply", Range(0,-1)) = -0.025
+        _LightDir ("Light Direction", float) = 0
     }
     SubShader
     {
@@ -90,6 +91,7 @@ Shader "Custom/PlanetShader"
         fixed _Night;
         fixed _SurfRotation;
         fixed _CloudRotation;
+        fixed _LightDir;
 
 
         struct PlanetSurfaceOutput
@@ -183,21 +185,25 @@ Shader "Custom/PlanetShader"
             fixed4 result;
 
             // Lighting amount
-            result.a = dot(s.Normal, lightDir);
+            result.a = dot(
+                s.Normal,
+                //lightDir
+                fixed3(sin(_LightDir), 0, cos(_LightDir))
+            );
 
             // Atmosphere
             fixed atmo = pow(saturate(1 - dot(s.Normal, viewDir)), _AtmoPow);
 
             // Planet colour
-            result.rgb = _AtmoCol.rgb * _Atmosphere * atmo // Atmosphere
-                + (s.Albedo.rgb // Surface
-                + saturate(s.SurfaceData.z - s.SurfaceData.x) // Water specular
+            result.rgb = _AtmoCol.rgb * _Atmosphere * atmo  // Atmosphere
+                + (s.Albedo.rgb  // Surface
+                + saturate(s.SurfaceData.z - s.SurfaceData.x)  // Water specular
                 * _WaterSpeCol.rgb
                 * pow(
                     saturate(dot(s.Normal, normalize(lightDir + viewDir))),
                     _WaterSpeSprd
                 ))
-                * (1 - atmo); // Surface hidded behind the atmosphere
+                * (1 - atmo);  // Surface hidded behind the atmosphere
 
             // Day lighting
             result.rgb *= saturate(result.a);

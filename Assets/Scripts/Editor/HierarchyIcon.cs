@@ -28,7 +28,7 @@ public class HierarchyIcon : Editor
         Rect iconRect = new Rect(selectionRect.x, selectionRect.y + 1.0f, 15.0f, 15.0f);
 
         // Draw icon
-        const float alpha = 0.3f; // Alpha
+        const float alpha = 0.3f;  // Alpha
         if (go.name.StartsWith("Button"))
         {
             EditorGUI.DrawRect(
