@@ -3,7 +3,7 @@ using UnityEditor;
 
 public class PlayMenuSectionMove : Editor
 {
-    [MenuItem("ScenePlay/Section Move/Left")]
+    [MenuItem("PrometheusMission/ScenePlay Section Move/Left")]
     static public void MoveToLeftSection()
     {
         PlayMenuManager pmm = FindFirstObjectByType<PlayMenuManager>(FindObjectsInactive.Exclude);
@@ -15,7 +15,7 @@ public class PlayMenuSectionMove : Editor
         pmm.ButtonSection(true);
     }
 
-    [MenuItem("ScenePlay/Section Move/Right")]
+    [MenuItem("PrometheusMission/ScenePlay Section Move/Right")]
     static public void MoveToRightSection()
     {
         PlayMenuManager pmm = FindFirstObjectByType<PlayMenuManager>(FindObjectsInactive.Exclude);
