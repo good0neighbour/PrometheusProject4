@@ -11,7 +11,8 @@ public enum LanguageType
     English,
     Russian,
     Japanese,
-    French
+    French,
+    End
 }
 
 
