@@ -5,10 +5,14 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using TMPro;
 using System.Text;
+using static UnityEditor.EditorGUILayout;
+using System.Linq;
 
 public class LanguageCreator : EditorWindow
 {
     static private LanguageCreator _window = null;
+    private FileInfo[] _languageData = null;
+    private string[] _curLans = null;
     private byte _status = 0;
 
 
@@ -21,12 +25,20 @@ public class LanguageCreator : EditorWindow
             _window.position = new Rect(700.0f, 300.0f, 300.0f, 500.0f);
         }
 
+        // Searches language files.
+        _window.SearchCurrentLanguageFiles();
+
+
         _window.ShowAuxWindow();
     }
 
 
     private void OnGUI()
     {
+        // Title
+        LabelField("Language Creator", EditorStyles.boldLabel);
+        Space(10.0f);
+
         if (GUILayout.Button("Create UI Language files from Scenes"))
         {
             string[] words = null;
@@ -38,6 +50,9 @@ public class LanguageCreator : EditorWindow
                 _status = ForGoogleTranslate(words);
             }
 
+            // Searches language files again.
+            SearchCurrentLanguageFiles();
+
             // Refresh
             AssetDatabase.Refresh();
         }
@@ -47,31 +62,41 @@ public class LanguageCreator : EditorWindow
             // Creates json
             _status = TextToJson();
 
+            // Searches language files again.
+            SearchCurrentLanguageFiles();
+
             // Refresh
             AssetDatabase.Refresh();
         }
 
-            switch (_status)
+        // Print status
+        switch (_status)
         {
             case 1:
-                GUILayout.Label("Successfully created.");
-                return;
+                LabelField("Successfully created.");
+                break;
 
             case 2:
-                GUILayout.Label("Failed to create UI Language json.");
-                return;
+                LabelField("Failed to create UI Language json.");
+                break;
 
             case 3:
-                GUILayout.Label("Failed to create translate file.");
-                return;
+                LabelField("Failed to create translate file.");
+                break;
 
             case 4:
-                GUILayout.Label("Failed to create language files.");
-                return;
+                LabelField("Failed to create language files.");
+                break;
 
             default:
-                return;
+                LabelField("");
+                break;
         }
+
+        Space(10.0f);
+
+        // Language info
+        PrintLanguageInfo(120.0f);
     }
 
 
@@ -156,8 +181,7 @@ public class LanguageCreator : EditorWindow
     {
         try
         {
-            DirectoryInfo dI = new DirectoryInfo($"{Application.dataPath}/LanguageData");
-            foreach (FileInfo file in dI.GetFiles("*.txt"))
+            foreach (FileInfo file in _languageData)
             {
                 // Doesn't make translate file into json.
                 if (file.Name.Equals("TranslateUI.txt"))
@@ -206,6 +230,64 @@ public class LanguageCreator : EditorWindow
         catch
         {
             return 4;
+        }
+    }
+
+
+    private void PrintLanguageInfo(float maxWidth)
+    {
+        // Label
+        BeginHorizontal();
+        LabelField("Language file", EditorStyles.boldLabel, GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+        LabelField("Translate file", EditorStyles.boldLabel, GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+        LabelField("Language json", EditorStyles.boldLabel, GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+        EndHorizontal();
+
+        // Elements
+        for (byte i = 0; i < _languageData.Length; ++i)
+        {
+            // File name
+            string fileName = _languageData[i].Name.Remove(_languageData[i].Name.IndexOf('.'));
+
+            // Print info
+            BeginHorizontal();
+            if (fileName.Contains("Translate"))
+            {
+                LabelField(fileName.Replace("Translate", "Korean"), GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+                LabelField("txt", GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+                LabelField("json", GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+            }
+            else
+            {
+                LabelField(fileName, GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+                LabelField("txt", GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+                if (_curLans.Contains(fileName))
+                {
+                    LabelField("json", GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+                }
+                else
+                {
+                    EditorStyles.label.normal.textColor = new Color(1.0f, 0.3f, 0.3f, 1.0f);
+                    LabelField("Required", GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+                    EditorStyles.label.normal.textColor = Color.white;
+                }
+            }
+            EndHorizontal();
+        }
+    }
+
+
+    private void SearchCurrentLanguageFiles()
+    {
+        // Translate files
+        _languageData = new DirectoryInfo($"{Application.dataPath}/LanguageData").GetFiles("*.txt");
+
+        // Language json
+        FileInfo[] lanfiles = new DirectoryInfo($"{Application.dataPath}/Resources/Languages").GetFiles("*.json");
+        _curLans = new string[lanfiles.Length];
+        for (byte i = 0; i < lanfiles.Length; ++i)
+        {
+            _curLans[i] = lanfiles[i].Name.Remove(lanfiles[i].Name.IndexOf('.'));
         }
     }
 }

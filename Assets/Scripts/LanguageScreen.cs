@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class LanguageScreen : MonoBehaviour
@@ -8,6 +7,7 @@ public class LanguageScreen : MonoBehaviour
     public void ButtonLanguageScreenActive(bool active)
     {
         gameObject.SetActive(active);
+        AudioManager.Instance.Play(AudioType.Touch);
     }
 
 

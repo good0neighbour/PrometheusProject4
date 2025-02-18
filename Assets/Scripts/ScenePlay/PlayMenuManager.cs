@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using System.Text;
 
 public class PlayMenuManager : MonoBehaviour
 {
@@ -12,6 +14,11 @@ public class PlayMenuManager : MonoBehaviour
     [Header("Play Menu")]
     [SerializeField] private GameObject[] _MenuButtons = new GameObject[2];
     [SerializeField] private GameObject[] _PlayMenus = new GameObject[3];
+    [Header("Game Speed Controls")]
+    [SerializeField] private TextMeshProUGUI _pauseButtonText = null;
+    [SerializeField] private TextMeshProUGUI _speedButtonText = null;
+    [SerializeField] private Color _activeColour = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+    [SerializeField] private Color _deactiveColour = new Color(1.0f, 1.0f, 1.0f, 1.0f);
     [Header("Noise Material")]
     [SerializeField][Range(0.0f, 1.0f)] private float _normalBrightness = 0.3921568627450980392156862745098f;
     [SerializeField][Range(0.0f, 1.0f)] private float _interactionBrightness = 1.0f;
@@ -19,7 +26,9 @@ public class PlayMenuManager : MonoBehaviour
     [SerializeField] private float _noiseFadeOutTime = 0.5f;
     [SerializeField] private Image[] _noiseBackgrounds = null;
     [SerializeField] private Material _noiseMaterial = null;
+    private StringBuilder _speedTextBuilder = new StringBuilder();
     private sbyte _currentSection = 0;
+    private bool _isPaused = false;
 
 
     public static PlayMenuManager Instance { get; private set; }
@@ -41,9 +50,58 @@ public class PlayMenuManager : MonoBehaviour
             SectionMove(1);
         }
 
+        // Audio play
+        AudioManager.Instance.Play(AudioType.Touch);
+
         // Noise brightness change
         StopAllCoroutines();
         StartCoroutine(NoiseBrightnessAnim());
+    }
+
+
+    public void ButtonGameSpeed()
+    {
+        if (_isPaused)
+        {
+            // Resumes game when the game is paused.
+            ButtonGamePause();
+        }
+        else
+        {
+            // Game speed set and sprite change
+            byte gameSpeed = PlayManager.Instance.SetGameSpeed();
+            _speedTextBuilder.Clear();
+            for (byte i = 0; i < gameSpeed; ++i)
+            {
+                _speedTextBuilder.Append('4');
+            }
+            _speedButtonText.text = _speedTextBuilder.ToString();
+
+            // Audio play
+            AudioManager.Instance.Play(AudioType.Touch);
+        }
+    }
+
+
+    public void ButtonGamePause()
+    {
+        if (_isPaused)
+        {
+            PlayManager.Instance.SetGamePause(GamePause.Resume);
+            _pauseButtonText.color = _deactiveColour;
+            _speedButtonText.color = _activeColour;
+            _isPaused = false;
+        }
+        else
+        {
+            PlayManager.Instance.SetGamePause(GamePause.Pause);
+            _pauseButtonText.color = _activeColour;
+            _speedButtonText.color = _deactiveColour;
+            _isPaused = true;
+        }
+
+        // Audio play
+        AudioManager.Instance.Play(AudioType.Touch);
     }
 
 
@@ -80,6 +138,9 @@ public class PlayMenuManager : MonoBehaviour
             _PlayMenus[2] = selectedMenu;
             _PlayMenus[2].SetActive(true);
         }
+
+        // Audio play
+        AudioManager.Instance.Play(AudioType.Touch);
 
         // Noise brightness change
         StopAllCoroutines();
@@ -184,6 +245,10 @@ public class PlayMenuManager : MonoBehaviour
         {
             image.material = _noiseMaterial;
         }
+
+        // Game speed control colour
+        _pauseButtonText.color = _deactiveColour;
+        _speedButtonText.color = _activeColour;
 
         // Default noise brightness
         _noiseMaterial.SetColor(

@@ -83,7 +83,7 @@ Material:
     - _Atmosphere: 1
     - _BumpScale: 1
     - _Cloud: 1
-    - _CloudRotation: -0.05
+    - _CloudRotation: 0
     - _CloudTurnSpeed: -0.025
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -110,7 +110,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _SurfRotation: -0.1
+    - _SurfRotation: 0
     - _SurfTurnSpeed: -0.1
     - _TurSpe: -0.1
     - _TurnSpeed: -0.1

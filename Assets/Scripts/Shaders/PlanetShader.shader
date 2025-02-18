@@ -40,8 +40,8 @@ Shader "Custom/PlanetShader"
         _Night ("Night Lighting Amount", Range(0,1)) = 1
         [Space(20)]
         [Header(Planet Turning)]
-        _SurfRotation ("Surface Rotation Multiply", Range(0,-1)) = -0.1
-        _CloudRotation ("Cloud Rotation Multiply", Range(0,-1)) = -0.025
+        _SurfRotation ("Surface Rotation", float) = 0
+        _CloudRotation ("Cloud Rotation", float) = 0
         _LightDir ("Light Direction", float) = 0
     }
     SubShader
@@ -114,7 +114,7 @@ Shader "Custom/PlanetShader"
             fixed4 c = tex2D(
                 _SurfTex,
                 fixed2(
-                    IN.uv_SurfTex.x + _Time.x * _SurfRotation,
+                    IN.uv_SurfTex.x + _SurfRotation,
                     IN.uv_SurfTex.y
                 )
             );
@@ -149,7 +149,7 @@ Shader "Custom/PlanetShader"
             fixed4 cloud = tex2D(
                 _CloudTex,
                 fixed2(
-                    IN.uv_CloudTex.x + _Time.x * _CloudRotation,
+                    IN.uv_CloudTex.x + _CloudRotation,
                     IN.uv_CloudTex.y
                 )
             );
@@ -169,7 +169,7 @@ Shader "Custom/PlanetShader"
             normal.xyz = UnpackNormal(tex2D(
                 _IceNor,
                 fixed2(
-                    IN.uv_CloudTex.x + _Time.x * _SurfRotation,
+                    IN.uv_CloudTex.x + _SurfRotation,
                     IN.uv_CloudTex.y
                 )
             ));

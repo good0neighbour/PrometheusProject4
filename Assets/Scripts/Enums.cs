@@ -1,3 +1,10 @@
+public enum GamePause
+{
+    Pause = 1,
+    Resume = -1
+}
+
+
 public enum LanguageType
 {
     Korean,
@@ -8,8 +15,9 @@ public enum LanguageType
 }
 
 
-public enum PlaySectionType
+public enum AudioType
 {
-    Left,
-    Right
+    Touch,
+    Select,
+    End
 }
