@@ -9,6 +9,7 @@ public class PlayMenuSectionMove : Editor
         PlayMenuManager pmm = FindFirstObjectByType<PlayMenuManager>(FindObjectsInactive.Exclude);
         if (pmm == null)
         {
+            Debug.LogWarning("Only functioning on ScenePlay.\nPlayMenuManager, MoveToLeftSection()");
             return;
         }
 
@@ -21,6 +22,7 @@ public class PlayMenuSectionMove : Editor
         PlayMenuManager pmm = FindFirstObjectByType<PlayMenuManager>(FindObjectsInactive.Exclude);
         if (pmm == null)
         {
+            Debug.LogWarning("Only functioning on ScenePlay\nPlayMenuManager, MoveToRightSection()");
             return;
         }
 

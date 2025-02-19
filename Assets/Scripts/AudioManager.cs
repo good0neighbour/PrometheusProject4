@@ -109,6 +109,9 @@ public class AudioManager : MonoBehaviour
             // Unity crashes
             //_channels[i] = Instantiate(_bgMusicChannel, transform);
         }
+
+        // Don't destroy on load
+        DontDestroyOnLoad(gameObject);
     }
 
 

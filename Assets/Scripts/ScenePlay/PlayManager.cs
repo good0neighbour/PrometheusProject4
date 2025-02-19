@@ -86,16 +86,14 @@ public class PlayManager : MonoBehaviour
         Instance = this;
 
         // Find planet renderer
-        foreach (MeshRenderer mshRndrr in FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include, FindObjectsSortMode.None))
-        {
-            if (mshRndrr.name.Equals("Planet"))
-            {
-                _planetMaterial = mshRndrr.material;
+        _planetMaterial = GetComponent<MeshRenderer>().material;
 #if UNITY_EDITOR
-                Debug.Log($"Planet material found: {mshRndrr.name}");
+        Debug.Log($"Planet material found: {_planetMaterial.name}");
 #endif
-            }
-        }
+#if UNITY_EDITOR
+        // Loads AudioChannel on editor mode.
+        GameManager.Instance.LoadAudioChannel();
+#endif
     }
 
 

@@ -17,11 +17,14 @@ public class LanguageManager
     {
         get
         {
-            if (_instance == null)
+            switch (_instance)
             {
-                _instance = new LanguageManager();
+                case null:
+                    _instance = new LanguageManager();
+                    return _instance;
+                default:
+                    return _instance;
             }
-            return _instance;
         }
     }
 
