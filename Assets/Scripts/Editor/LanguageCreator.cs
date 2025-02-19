@@ -16,11 +16,14 @@ public class LanguageCreator : EditorWindow
     private FileInfo[] _languageData = null;
     private string[] _curTras = null;
     private string[] _curLans = null;
+    private string[] _curFons = null;
+    private Vector2 scrollPos = Vector2.zero;
     private string _textArea = null;
     private string _previousText = null;
     private byte _status = 0;
     private bool _curRunLanToggle = false;
-    private bool _infoToggle = true;
+    private bool _lanInfoToggle = true;
+    private bool _fontInfoToggle = true;
 
 
     [MenuItem("PrometheusMission/Languages", priority = 0)]
@@ -47,6 +50,9 @@ public class LanguageCreator : EditorWindow
 
     private void OnGUI()
     {
+        scrollPos = BeginScrollView(scrollPos);
+
+        Space(20.0f);
         LayoutUILanguage();
         Space(10.0f);
         LayoutRuntimeLanguage();
@@ -55,11 +61,19 @@ public class LanguageCreator : EditorWindow
         _curRunLanToggle = Foldout(_curRunLanToggle, "Current runtime language", true);
         PrintCurrentRuntimeLanguage();
 
-        Space(10.0f);
+        Space(20.0f);
 
         // Language file info
-        _infoToggle = Foldout(_infoToggle, "Language file info", true);
+        _lanInfoToggle = Foldout(_lanInfoToggle, "Language file info", true);
         PrintLanguageInfo(120.0f);
+
+        Space(20.0f);
+
+        // Font info
+        _fontInfoToggle = Foldout(_fontInfoToggle, "Font info", true);
+        PrintCurrentFont(120.0f);
+
+        EndScrollView();
     }
 
 
@@ -360,7 +374,7 @@ public class LanguageCreator : EditorWindow
 
     private void PrintLanguageInfo(float maxWidth)
     {
-        if (_infoToggle)
+        if (_lanInfoToggle)
         {
             // Label
             BeginHorizontal();
@@ -427,6 +441,37 @@ public class LanguageCreator : EditorWindow
     }
 
 
+    private void PrintCurrentFont(float maxWidth)
+    {
+        if (_fontInfoToggle)
+        {
+            // Label
+            BeginHorizontal();
+            LabelField("Font", EditorStyles.boldLabel, GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+            LabelField("Status", EditorStyles.boldLabel, GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+            EndHorizontal();
+
+            // Elements
+            for (LanguageType i = 0; i < LanguageType.End; ++i)
+            {
+                BeginHorizontal();
+                LabelField(i.ToString(), GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+                if (_curFons.Contains($"Font{i.ToString()}"))
+                {
+                    LabelField("Exist", GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+                }
+                else
+                {
+                    EditorStyles.label.normal.textColor = new Color(1.0f, 0.3f, 0.3f, 1.0f);
+                    LabelField("Required", GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+                    EditorStyles.label.normal.textColor = Color.white;
+                }
+                EndHorizontal();
+            }
+        }
+    }
+
+
     private void SearchCurrentLanguageFiles()
     {
         // Clears file lenghth dictionary
@@ -477,6 +522,16 @@ public class LanguageCreator : EditorWindow
                     ).ToString()
                 ).Words.Length
             );
+        }
+
+        // Font
+        lanfiles = new DirectoryInfo($"{Application.dataPath}/Resources/Fonts").GetFiles("*.asset");
+        _curFons = new string[lanfiles.Length];
+        for (byte i = 0; i < lanfiles.Length; ++i)
+        {
+            // Records file type.
+            _curFons[i] = lanfiles[i].Name.Remove(lanfiles[i].Name.IndexOf('.'));
+            Debug.Log(_curLans[i]);
         }
     }
 

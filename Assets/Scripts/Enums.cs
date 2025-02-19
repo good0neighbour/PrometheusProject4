@@ -1,7 +1,25 @@
-public enum GamePause
+public enum FloatValue
 {
-    Pause = 1,
-    Resume = -1
+    Exploration,
+    End
+}
+
+
+public enum IntValue
+{
+    End
+}
+
+
+public enum ShortValue
+{
+    End
+}
+
+
+public enum ByteValue
+{
+    End
 }
 
 
@@ -21,4 +39,10 @@ public enum AudioType
     Touch,
     Select,
     End
+}
+
+public enum GamePause
+{
+    Pause = 1,
+    Resume = -1
 }

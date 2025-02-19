@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using static Constants;
 
@@ -10,6 +11,7 @@ public class PlayManager : MonoBehaviour
     [SerializeField][Range(0.0f, -0.005f)] private float _cloudRotation = -0.0015625f;
     [SerializeField][Range(0.0f, 0.01f)] private float _lightRotation = 0.005f;
     private Material _planetMaterial = null;
+    private PlayData _playData = new PlayData();
     private float _planetSurfRot = 0.0f;
     private float _planetCloudRot = 0.0f;
     private float _planetlightRot = Mathf.PI;
@@ -18,6 +20,58 @@ public class PlayManager : MonoBehaviour
 
     static public PlayManager Instance { get; private set; }
     static public float DeltaTime { get; private set; }
+
+
+
+    /* ==================== Indexer ==================== */
+
+    public float this[FloatValue floatValue]
+    {
+        get
+        {
+            return _playData.FloatValues[(int)floatValue];
+        }
+        set
+        {
+            _playData.FloatValues[(int)floatValue] = value;
+        }
+    }
+
+    public int this[IntValue intValue]
+    {
+        get
+        {
+            return _playData.IntValues[(int)intValue];
+        }
+        set
+        {
+            _playData.IntValues[(int)intValue] = value;
+        }
+    }
+
+    public short this[ShortValue intValue]
+    {
+        get
+        {
+            return _playData.ShortValues[(int)intValue];
+        }
+        set
+        {
+            _playData.ShortValues[(int)intValue] = value;
+        }
+    }
+
+    public byte this[ByteValue intValue]
+    {
+        get
+        {
+            return _playData.ByteValues[(int)intValue];
+        }
+        set
+        {
+            _playData.ByteValues[(int)intValue] = value;
+        }
+    }
 
 
 
@@ -120,5 +174,18 @@ public class PlayManager : MonoBehaviour
         DeltaTime = Time.deltaTime * _gameSpeed;
 
         PlanetRotation();
+    }
+
+
+
+    /* ==================== Structure ==================== */
+
+    [Serializable]
+    private struct PlayData
+    {
+        public float[] FloatValues;
+        public int[] IntValues;
+        public short[] ShortValues;
+        public byte[] ByteValues;
     }
 }
