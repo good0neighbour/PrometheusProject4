@@ -202,7 +202,7 @@ public class LanguageCreator : EditorWindow
             }
 
             // Creates translate file.
-            File.WriteAllText($"{Application.dataPath}/LanguageData/Translate{type}.txt", translateFile.ToString());
+            File.WriteAllText($"{Application.dataPath}/Data/Translates/Translate{type}.txt", translateFile.ToString());
 
             // Successful
             return 1;
@@ -293,13 +293,17 @@ public class LanguageCreator : EditorWindow
         // Modified text save
         if (GUILayout.Button("Create Runtime language files."))
         {
-            RuntimeJsonCreate(_curRuns.ToArray());
+            _status = RuntimeJsonCreate(_curRuns.ToArray());
             if (_status == 9)
             {
                 _status = ForGoogleTranslate(_curRuns.ToArray(), "Runtime");
                 if (_status == 3)
                 {
                     _status = 11;
+                }
+                else
+                {
+                    _status = 9;
                 }
             }
 
@@ -478,14 +482,14 @@ public class LanguageCreator : EditorWindow
         _fileLength.Clear();
 
         // Translate files
-        _languageData = new DirectoryInfo($"{Application.dataPath}/LanguageData").GetFiles("*.txt");
+        _languageData = new DirectoryInfo($"{Application.dataPath}/Data/Translates").GetFiles("*.txt");
         _curTras = new string[_languageData.Length];
         for (byte i = 0; i < _languageData.Length; ++i)
         {
             // Loads current registered runtime words..
             if (_languageData[i].Name.Equals("KoreanRuntime.txt"))
             {
-                _curRuns = ReadTranslateFile($"{Application.dataPath}/LanguageData/KoreanRuntime.txt").ToList();
+                _curRuns = ReadTranslateFile($"{Application.dataPath}/Data/Translates/KoreanRuntime.txt").ToList();
             }
 
             // Records file type.
@@ -531,7 +535,6 @@ public class LanguageCreator : EditorWindow
         {
             // Records file type.
             _curFons[i] = lanfiles[i].Name.Remove(lanfiles[i].Name.IndexOf('.'));
-            Debug.Log(_curLans[i]);
         }
     }
 

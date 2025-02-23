@@ -13,6 +13,6 @@ public class Exploration : MonoBehaviour
 
     private void Update()
     {
-        _explorartionProgressBar.fillAmount = PlayManager.Instance[FloatValue.Exploration];
+        _explorartionProgressBar.fillAmount = PlayManager.Instance.Exploration;
     }
 }
