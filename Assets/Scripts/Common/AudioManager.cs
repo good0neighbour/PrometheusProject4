@@ -45,6 +45,10 @@ public class AudioManager : MonoBehaviour
 
     /* ==================== Public Methods ==================== */
 
+    /// <summary>
+    /// Plays audio.
+    /// </summary>
+    /// <param name="type">Audio clip to play.</param>
     public void Play(AudioType type)
     {
         // Sets audio.

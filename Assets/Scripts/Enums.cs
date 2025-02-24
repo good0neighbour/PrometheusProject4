@@ -1,28 +1,4 @@
-public enum FloatValue
-{
-    Exploration,
-    End
-}
-
-
-public enum IntValue
-{
-    End
-}
-
-
-public enum ShortValue
-{
-    End
-}
-
-
-public enum ByteValue
-{
-    End
-}
-
-
+#if UNITY_EDITOR
 public enum LanguageType
 {
     Korean,
@@ -32,12 +8,14 @@ public enum LanguageType
     French,
     End
 }
+#endif
 
 
 public enum AudioType
 {
     Touch,
     Select,
+    Unable,
     End
 }
 

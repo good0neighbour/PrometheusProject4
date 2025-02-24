@@ -21,7 +21,7 @@ public class LanguageCreator : EditorWindow
     private string _textArea = null;
     private string _previousText = null;
     private byte _status = 0;
-    private bool _curRunLanToggle = false;
+    private bool _curRunLanToggle = true;
     private bool _lanInfoToggle = true;
     private bool _fontInfoToggle = true;
 
@@ -487,9 +487,9 @@ public class LanguageCreator : EditorWindow
         for (byte i = 0; i < _languageData.Length; ++i)
         {
             // Loads current registered runtime words..
-            if (_languageData[i].Name.Equals("KoreanRuntime.txt"))
+            if (_languageData[i].Name.Equals("TranslateRuntime.txt"))
             {
-                _curRuns = ReadTranslateFile($"{Application.dataPath}/Data/Translates/KoreanRuntime.txt").ToList();
+                _curRuns = ReadTranslateFile($"{Application.dataPath}/Data/Translates/TranslateRuntime.txt").ToList();
             }
 
             // Records file type.

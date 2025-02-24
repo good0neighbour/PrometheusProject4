@@ -9,8 +9,8 @@ public class LanguageManager
 
     static private LanguageManager _instance = null;
     private GameDelegate _onLanguageChange = null;
+    private Dictionary<string, string> _words = new Dictionary<string, string>();
     private List<LanguageTranslator> _translators = new List<LanguageTranslator>();
-    private string[] words = null;
 
 
     static public LanguageManager Instance
@@ -32,11 +32,16 @@ public class LanguageManager
 
     /* ==================== Indexer ==================== */
 
-    public string this[ushort index]
+    /// <summary>
+    /// Returns current runtime language.
+    /// </summary>
+    /// <param name="korean">Word as Korean.</param>
+    /// <returns>Current runtime language.</returns>
+    public string this[string korean]
     {
         get
         {
-            return words[index];
+            return _words[korean];
         }
     }
 
@@ -77,6 +82,9 @@ public class LanguageManager
             laTr.SetUIWord(words[laTr.GetWordIndex()], font);
         }
 
+        // Runtime language change
+        LoadRuntimeLanguage(language);
+
         // On language change
         _onLanguageChange?.Invoke();
     }
@@ -104,9 +112,33 @@ public class LanguageManager
 
     /* ==================== Private Methods ==================== */
 
+    private LanguageManager()
+    {
+        LanguageJson korean = JsonUtility.FromJson<LanguageJson>(Resources.Load("Languages/KoreanRuntime").ToString());
+        LanguageJson cur = JsonUtility.FromJson<LanguageJson>(Resources.Load($"Languages/{GameManager.Instance.Language}Runtime").ToString());
+
+        for (ushort i = 0; i < korean.Words.Length; ++i)
+        {
+            _words.Add(korean.Words[i], cur.Words[i]);
+        }
+    }
+
+
     private string[] LoadUILanguage(string language)
     {
         return JsonUtility.FromJson<LanguageJson>(Resources.Load($"Languages/{language}UI").ToString()).Words;
+    }
+
+
+    private void LoadRuntimeLanguage(string language)
+    {
+        LanguageJson korean = JsonUtility.FromJson<LanguageJson>(Resources.Load("Languages/KoreanRuntime").ToString());
+        LanguageJson cur = JsonUtility.FromJson<LanguageJson>(Resources.Load($"Languages/{language}Runtime").ToString());
+
+        for (ushort i = 0; i < korean.Words.Length; ++i)
+        {
+            _words[korean.Words[i]] = cur.Words[i];
+        }
     }
 
 

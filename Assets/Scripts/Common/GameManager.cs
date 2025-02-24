@@ -24,13 +24,15 @@ public class GameManager
         }
     }
 
+    public string Language { get; set; }
+
 
 
     /* ==================== Public Methods ==================== */
 
 #if UNITY_EDITOR
     public void LoadAudioChannel()
-	{
+    {
         if (AudioManager.Instance == null)
         {
             GameObject audio = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/AudioChannel.prefab");
@@ -38,4 +40,13 @@ public class GameManager
         }
     }
 #endif
+
+
+
+    /* ==================== Private Methods ==================== */
+
+    private GameManager()
+    {
+        Language = "Korean";
+    }
 }

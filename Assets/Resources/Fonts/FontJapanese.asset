@@ -140,7 +140,7 @@ Material:
     - _UnderlaySoftness: 0
     - _VertexOffsetX: 0
     - _VertexOffsetY: 0
-    - _WeightBold: -0.4
+    - _WeightBold: 0
     - _WeightNormal: -0.5
     m_Colors:
     - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
@@ -288,7 +288,7 @@ MonoBehaviour:
   fontWeights: []
   normalStyle: -0.5
   normalSpacingOffset: 0
-  boldStyle: -0.4
+  boldStyle: 0
   boldSpacing: 0
   italicStyle: 35
   tabSize: 10

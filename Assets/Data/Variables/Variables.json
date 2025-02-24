@@ -1,1 +1,1 @@
-{"Variables":[{"Type":4,"Name":"Exploration"}],"StructureName":"PlayData","FieldName":"_data"}
+{"Variables":[{"Type":8,"Name":"Year"},{"Type":0,"Name":"Month"},{"Type":4,"Name":"Fund"},{"Type":4,"Name":"Explore"},{"Type":8,"Name":"ExploreCost"},{"Type":4,"Name":"ExploreAmn"},{"Type":4,"Name":"ExploreIncMlt"},{"Type":7,"Name":"ExploreNum"},{"Type":4,"Name":"ExploreSpdMlt"}],"StructureName":"PlayData","FieldName":"_data"}

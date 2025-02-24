@@ -107,7 +107,10 @@ public class VariableCreator : EditorWindow
         {
             // Initial text
             StringBuilder builder = new StringBuilder(
-                "public partial class PlayManager\n{"
+                "using System;\nusing System.Collections.Generic;\nusing UnityEngine;"
+            );
+            builder.Append(
+                "\n\npublic partial class PlayManager\n{"
             );
             builder.Append(
                 "\n\t// Field"
@@ -130,11 +133,33 @@ public class VariableCreator : EditorWindow
                 );
             }
 
+            // Scriptable object
+            builder.Append(
+                "\n\n\t// Inner class"
+            );
+            builder.Append(
+                "\n\t[CreateAssetMenu(fileName = \"SaveData\", menuName = \"PrometheusMission/SaveData\")]"
+            );
+            builder.Append(
+                "\n\tprivate class SaveData : ScriptableObject\n\t{"
+            );
+            builder.Append(
+                $"\n\t\tpublic {_structureName} Variables;"
+            );
+            builder.Append(
+                $"\n\t\tpublic List<Land> Lands;\n\t}}"
+            );
+
             // Structure
             builder.Append(
                 "\n\n\t// Structure"
             );
-            builder.Append($"\n\tprivate struct {_structureName}\n\t{{");
+            builder.Append(
+                "\n\t[Serializable]"
+            );
+            builder.Append(
+                $"\n\tprivate struct {_structureName}\n\t{{"
+            );
             for (ushort i = 0; i < _data.Count; ++i)
             {
                 builder.Append(
@@ -182,12 +207,11 @@ public class VariableCreator : EditorWindow
         Long,
         Float,
         Double,
+        Decimal,
         SByte,
         UShort,
         UInt,
-        ULong,
-        UFloat,
-        UDouble
+        ULong
     }
 
 

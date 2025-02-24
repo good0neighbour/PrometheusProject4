@@ -19,6 +19,8 @@ public class PlayMenuManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _speedButtonText = null;
     [SerializeField] private Color _activeColour = new Color(1.0f, 1.0f, 1.0f, 1.0f);
     [SerializeField] private Color _deactiveColour = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+    [Header("Date")]
+    [SerializeField] private TextMeshProUGUI _dateText = null;
     [Header("Noise Material")]
     [SerializeField][Range(0.0f, 1.0f)] private float _normalBrightness = 0.3921568627450980392156862745098f;
     [SerializeField][Range(0.0f, 1.0f)] private float _interactionBrightness = 1.0f;
@@ -26,7 +28,13 @@ public class PlayMenuManager : MonoBehaviour
     [SerializeField] private float _noiseFadeOutTime = 0.5f;
     [SerializeField] private Image[] _noiseBackgrounds = null;
     [SerializeField] private Material _noiseMaterial = null;
+    [Header("Camera Position")]
+    [SerializeField] private float _camSidePos = 1.0f;
+    [SerializeField] private float _camMoveTime = 2.0f;
+    [SerializeField] private float _camMovePow = 2.0f;
     private StringBuilder _speedTextBuilder = new StringBuilder();
+    private Coroutine _noiseCoroutine = null;
+    private Coroutine _cameraCoroutine = null;
     private sbyte _currentSection = 0;
     private bool _isPaused = false;
 
@@ -54,8 +62,18 @@ public class PlayMenuManager : MonoBehaviour
         AudioManager.Instance.Play(AudioType.Touch);
 
         // Noise brightness change
-        StopAllCoroutines();
-        StartCoroutine(NoiseBrightnessAnim());
+        if (_noiseCoroutine != null)
+        {
+            StopCoroutine(_noiseCoroutine);
+        }
+        _noiseCoroutine = StartCoroutine(NoiseBrightnessAnim());
+
+        // Camera Move
+        if (_cameraCoroutine != null)
+        {
+            StopCoroutine(_cameraCoroutine);
+        }
+        _cameraCoroutine = StartCoroutine(CameraAnim(_camSidePos * _currentSection));
     }
 
 
@@ -231,6 +249,44 @@ public class PlayMenuManager : MonoBehaviour
             "_Colour",
             new Color(_normalBrightness, _normalBrightness, _normalBrightness, _noiseAlpha)
         );
+
+        // Coroutine end
+        _noiseCoroutine = null;
+    }
+
+
+    private IEnumerator CameraAnim(float goalPos)
+    {
+        Transform camTran = Camera.main.transform;
+        float initialPos = camTran.localPosition.x;
+        float length = goalPos - initialPos;
+        float time = 0.0f;
+
+        do
+        {
+            // Camera position change
+            camTran.localPosition = new Vector3(
+                //Mathf.Sin(time / _camMoveTime * 0.5f * Mathf.PI) * length + initialPos,
+                (initialPos - goalPos) / Mathf.Pow(-_camMoveTime, _camMovePow) * Mathf.Pow(time - _camMoveTime, _camMovePow) + goalPos,
+                0.0f,
+                0.0f
+            );
+
+            // Time change
+            time += Time.deltaTime;
+
+            yield return null;
+        } while (time < _camMoveTime);
+
+        // Sets camera position.
+        camTran.localPosition = new Vector3(
+            goalPos,
+            0.0f,
+            0.0f
+        );
+
+        // Coroutine end
+        _cameraCoroutine = null;
     }
 
 
@@ -255,5 +311,11 @@ public class PlayMenuManager : MonoBehaviour
             "_Colour",
             new Color(_normalBrightness, _normalBrightness, _normalBrightness, _noiseAlpha)
         );
+    }
+
+
+    private void Update()
+    {
+        _dateText.text = $"{PlayManager.Instance.Year}{LanguageManager.Instance["³â"]} {PlayManager.Instance.Month}{LanguageManager.Instance["¿ù"]}";
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using static Constants;
 
@@ -10,15 +11,22 @@ public partial class PlayManager : MonoBehaviour
     [SerializeField][Range(0.0f, -0.005f)] private float _surfaceRotation = -0.003125f;
     [SerializeField][Range(0.0f, -0.005f)] private float _cloudRotation = -0.0015625f;
     [SerializeField][Range(0.0f, 0.01f)] private float _lightRotation = 0.005f;
+    [Header("UI")]
+    [SerializeField] private Exploration _exploration = null;
+    private GameDelegate _onUpdate = null;
+    private GameDelegate _onMonthChange = null;
+    private GameDelegate _onYearChange = null;
     private Material _planetMaterial = null;
     private float _planetSurfRot = 0.0f;
     private float _planetCloudRot = 0.0f;
     private float _planetlightRot = Mathf.PI;
+    private float _time = 0.0f;
     private byte _gameSpeed = 1;
     private byte _gamePause = 0;
 
     static public PlayManager Instance { get; private set; }
-    static public float DeltaTime { get; private set; }
+    public float DeltaTime { get; private set; }
+    public List<Land> Lands { get; private set; }
 
 
 
@@ -64,6 +72,36 @@ public partial class PlayManager : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Adds function to onUpdate delegate.
+    /// </summary>
+    /// <param name="onUpdate">Function to add</param>
+    public void AddOnUpdate(GameDelegate onUpdate)
+    {
+        _onUpdate += onUpdate;
+    }
+
+
+    /// <summary>
+    /// Adds function to onMonthChange delegate.
+    /// </summary>
+    /// <param name="onMonthChange">Function to add</param>
+    public void AddOnMonthChange(GameDelegate onMonthChange)
+    {
+        _onMonthChange += onMonthChange;
+    }
+
+
+    /// <summary>
+    /// Adds function to onYearChange delegate.
+    /// </summary>
+    /// <param name="onYearChange">Function to add</param>
+    public void AddOnYearChange(GameDelegate onYearChange)
+    {
+        _onYearChange += onYearChange;
+    }
+
+
 
     /* ==================== Private Methods ==================== */
 
@@ -81,10 +119,36 @@ public partial class PlayManager : MonoBehaviour
     }
 
 
+    private void LoadPlayData()
+    {
+        SaveData data = Resources.Load<SaveData>("PlayData/InitialData");
+        _data = data.Variables;
+        if (data.Lands != null)
+        {
+            Lands = new List<Land>();
+            for (ushort i = 0; i < data.Lands.Count; ++i)
+            {
+                Lands.Add(data.Lands[i]);
+            }
+        }
+    }
+
+
+    private void SavePlayData()
+    {
+        SaveData data = Resources.Load<SaveData>("PlayData/InitialData");
+        data.Variables = _data;
+        data.Lands = Lands;
+    }
+
+
     private void Awake()
     {
         // Unity singleton pattern
         Instance = this;
+
+        // Loads play data.
+        LoadPlayData();
 
         // Find planet renderer
         _planetMaterial = GetComponent<MeshRenderer>().material;
@@ -106,7 +170,7 @@ public partial class PlayManager : MonoBehaviour
 
     private void Update()
     {
-        // Game pause
+        #region Game Pause
         switch (_gamePause)
         {
             case 0:
@@ -116,10 +180,62 @@ public partial class PlayManager : MonoBehaviour
                 DeltaTime = 0.0f;
                 return;
         }
+        #endregion
 
         // Delta time
         DeltaTime = Time.deltaTime * _gameSpeed;
 
+        #region Time Pass
+        if (_time >= MONTH_PER_SEC)
+        {
+            _time -= MONTH_PER_SEC;
+
+            // Monthly move
+            _onMonthChange?.Invoke();
+
+            if (_data.Month >= 12)
+            {
+                // Year pass
+                ++_data.Year;
+                _data.Month = 1;
+
+                // Annual move
+                _onYearChange?.Invoke();
+            }
+            else
+            {
+                // Month pass
+                ++_data.Month;
+            }
+        }
+        _time += DeltaTime;
+        #endregion
+
+        #region Exploration
+        if (Lands.Count < MAX_LAND_NUM)
+        {
+            if (_data.Explore >= _data.ExploreAmn)
+            {
+                // Exploration update
+                _data.Explore -= _data.ExploreAmn;
+                _data.ExploreAmn *= _data.ExploreIncMlt;
+
+                // New land
+                Land land = new Land();
+                land.RandomResources();
+                Lands.Add(land);
+
+                // Land list UI
+                _exploration.AddLand();
+            }
+            _data.Explore += DeltaTime * _data.ExploreSpdMlt * _data.ExploreNum;
+        }
+        #endregion
+
+        // Update pass
+        _onUpdate?.Invoke();
+
+        // Planet rotation
         PlanetRotation();
     }
 }

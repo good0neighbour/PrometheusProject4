@@ -49,8 +49,10 @@ MonoBehaviour:
   _audioDatas:
   - Clip: {fileID: 8300000, guid: 6c0e6d125ca69a544b8505687672546f, type: 3}
     Volume: 1
-  - Clip: {fileID: 0}
-    Volume: 0
+  - Clip: {fileID: 8300000, guid: 068071c36b710a949abed7ad9fd17463, type: 3}
+    Volume: 1
+  - Clip: {fileID: 8300000, guid: 3a9779de817514e45ac681d0a7d0e789, type: 3}
+    Volume: 1
 --- !u!82 &5647522369144190807
 AudioSource:
   m_ObjectHideFlags: 0
