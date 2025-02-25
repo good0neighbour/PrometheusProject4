@@ -1,8 +1,8 @@
 using System.Collections;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Text;
 
 public class PlayMenuManager : MonoBehaviour
 {
@@ -38,7 +38,6 @@ public class PlayMenuManager : MonoBehaviour
     private sbyte _currentSection = 0;
     private bool _isPaused = false;
 
-
     public static PlayMenuManager Instance { get; private set; }
 
 
@@ -73,7 +72,10 @@ public class PlayMenuManager : MonoBehaviour
         {
             StopCoroutine(_cameraCoroutine);
         }
-        _cameraCoroutine = StartCoroutine(CameraAnim(_camSidePos * _currentSection));
+        _cameraCoroutine = StartCoroutine(SectionMoveAnim(_camSidePos * _currentSection));
+
+        // Message box move
+        MessageManager.Instance.StartMesBoxMoveCoroutine(_currentSection);
     }
 
 
@@ -255,11 +257,11 @@ public class PlayMenuManager : MonoBehaviour
     }
 
 
-    private IEnumerator CameraAnim(float goalPos)
+    private IEnumerator SectionMoveAnim(float camGoalPos)
     {
         Transform camTran = Camera.main.transform;
-        float initialPos = camTran.localPosition.x;
-        float length = goalPos - initialPos;
+        float camIniPos = camTran.localPosition.x;
+        float camlen = camGoalPos - camIniPos;
         float time = 0.0f;
 
         do
@@ -267,7 +269,7 @@ public class PlayMenuManager : MonoBehaviour
             // Camera position change
             camTran.localPosition = new Vector3(
                 //Mathf.Sin(time / _camMoveTime * 0.5f * Mathf.PI) * length + initialPos,
-                (initialPos - goalPos) / Mathf.Pow(-_camMoveTime, _camMovePow) * Mathf.Pow(time - _camMoveTime, _camMovePow) + goalPos,
+                (camIniPos - camGoalPos) / Mathf.Pow(-_camMoveTime, _camMovePow) * Mathf.Pow(time - _camMoveTime, _camMovePow) + camGoalPos,
                 0.0f,
                 0.0f
             );
@@ -280,7 +282,7 @@ public class PlayMenuManager : MonoBehaviour
 
         // Sets camera position.
         camTran.localPosition = new Vector3(
-            goalPos,
+            camGoalPos,
             0.0f,
             0.0f
         );

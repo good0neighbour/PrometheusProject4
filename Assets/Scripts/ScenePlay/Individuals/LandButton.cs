@@ -8,7 +8,7 @@ public class LandButton : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI _title = null;
     [SerializeField] private TextMeshProUGUI _resources = null;
-    private ushort _index = 0;
+    private Land _land = null;
 
 
 
@@ -16,7 +16,7 @@ public class LandButton : MonoBehaviour
 
     public void SetTexts()
     {
-        _index = (ushort)(PlayManager.Instance.Lands.Count - 1);
+        _land = PlayManager.Instance.Lands[PlayManager.Instance.Lands.Count - 1];
         OnLanguageChange();
         LanguageManager.Instance.AddOnLanguageChange(OnLanguageChange);
         gameObject.SetActive(true);
@@ -29,30 +29,29 @@ public class LandButton : MonoBehaviour
     private void OnLanguageChange()
     {
         // Title
-        _title.text = $"{LanguageManager.Instance["ÅäÁö"]} {_index.ToString()}";
+        _title.text = $"{LanguageManager.Instance["ÅäÁö"]} {PlayManager.Instance.Lands.Count.ToString()}";
 
         // Info
         StringBuilder builder = new StringBuilder();
-        Land land = PlayManager.Instance.Lands[_index];
-        if (land.Stone > 0)
+        if (_land.Stone > 0)
         {
-            builder.Append($"{LanguageManager.Instance["¼®Á¦"]} {land.Stone.ToString()}\n");
+            builder.Append($"{LanguageManager.Instance["¼®Á¦"]} {_land.Stone.ToString()}\n");
         }
-        if (land.Iron > 0)
+        if (_land.Iron > 0)
         {
-            builder.Append($"{LanguageManager.Instance["Ã¶"]} {land.Iron.ToString()}\n");
+            builder.Append($"{LanguageManager.Instance["Ã¶"]} {_land.Iron.ToString()}\n");
         }
-        if (land.HeavyMetal > 0)
+        if (_land.HeavyMetal > 0)
         {
-            builder.Append($"{LanguageManager.Instance["Áß±Ý¼Ó"]} {land.HeavyMetal.ToString()}\n");
+            builder.Append($"{LanguageManager.Instance["Áß±Ý¼Ó"]} {_land.HeavyMetal.ToString()}\n");
         }
-        if (land.PreciousMetal > 0)
+        if (_land.PreciousMetal > 0)
         {
-            builder.Append($"{LanguageManager.Instance["±Í±Ý¼Ó"]} {land.PreciousMetal.ToString()}\n");
+            builder.Append($"{LanguageManager.Instance["±Í±Ý¼Ó"]} {_land.PreciousMetal.ToString()}\n");
         }
-        if (land.Nuclear > 0)
+        if (_land.Nuclear > 0)
         {
-            builder.Append($"{LanguageManager.Instance["ÇÙ¹°Áú"]} {land.Nuclear.ToString()}\n");
+            builder.Append($"{LanguageManager.Instance["ÇÙ¹°Áú"]} {_land.Nuclear.ToString()}\n");
         }
         builder.Remove(builder.Length - 1, 1);
         _resources.text = builder.ToString();

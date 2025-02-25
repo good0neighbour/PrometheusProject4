@@ -17,6 +17,7 @@ public partial class PlayManager : MonoBehaviour
     private GameDelegate _onMonthChange = null;
     private GameDelegate _onYearChange = null;
     private Material _planetMaterial = null;
+    private PlayData _data = new PlayData();
     private float _planetSurfRot = 0.0f;
     private float _planetCloudRot = 0.0f;
     private float _planetlightRot = Mathf.PI;
@@ -123,12 +124,16 @@ public partial class PlayManager : MonoBehaviour
     {
         SaveData data = Resources.Load<SaveData>("PlayData/InitialData");
         _data = data.Variables;
+        Lands = new List<Land>();
         if (data.Lands != null)
         {
-            Lands = new List<Land>();
             for (ushort i = 0; i < data.Lands.Count; ++i)
             {
+                // List add
                 Lands.Add(data.Lands[i]);
+
+                // Land list UI
+                _exploration.AddLand();
             }
         }
     }
@@ -136,7 +141,7 @@ public partial class PlayManager : MonoBehaviour
 
     private void SavePlayData()
     {
-        SaveData data = Resources.Load<SaveData>("PlayData/InitialData");
+        SaveData data = Resources.Load<SaveData>("PlayData/SaveData");
         data.Variables = _data;
         data.Lands = Lands;
     }
@@ -221,12 +226,13 @@ public partial class PlayManager : MonoBehaviour
                 _data.ExploreAmn *= _data.ExploreIncMlt;
 
                 // New land
-                Land land = new Land();
-                land.RandomResources();
-                Lands.Add(land);
+                Lands.Add(new Land().RandomResources());
 
                 // Land list UI
                 _exploration.AddLand();
+
+                // Show Message
+                MessageManager.Instance.EnqueueMessage("새로운 토지를 발견했습니다.");
             }
             _data.Explore += DeltaTime * _data.ExploreSpdMlt * _data.ExploreNum;
         }

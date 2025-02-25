@@ -35,8 +35,8 @@ public class GameManager
     {
         if (AudioManager.Instance == null)
         {
-            GameObject audio = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/AudioChannel.prefab");
-            Object.Instantiate(audio);
+            Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/AudioChannel.prefab"));
+            Debug.Log("AudioChannel has been automatically created.");
         }
     }
 #endif

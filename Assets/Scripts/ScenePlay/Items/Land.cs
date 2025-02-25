@@ -3,15 +3,16 @@ using static Constants;
 using Random = UnityEngine.Random;
 
 [Serializable]
-public struct Land
+public class Land
 {
-    public byte Stone;
-    public byte Iron;
-    public byte HeavyMetal;
-    public byte PreciousMetal;
-    public byte Nuclear;
+    public byte Stone { get; set; }
+    public byte Iron { get; set; }
+    public byte HeavyMetal { get; set; }
+    public byte PreciousMetal { get; set; }
+    public byte Nuclear { get; set; }
 
-    public void RandomResources()
+
+    public Land RandomResources()
     {
         if (Random.Range(0, 100) < STONE_POS)
         {
@@ -33,5 +34,7 @@ public struct Land
         {
             Nuclear = (byte)Random.Range(1, MAX_NUCLEAR);
         }
+
+        return this;
     }
 }

@@ -16,6 +16,7 @@ public enum AudioType
     Touch,
     Select,
     Unable,
+    Alert,
     End
 }
 

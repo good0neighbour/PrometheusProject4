@@ -12,7 +12,6 @@ public class LanguageManager
     private Dictionary<string, string> _words = new Dictionary<string, string>();
     private List<LanguageTranslator> _translators = new List<LanguageTranslator>();
 
-
     static public LanguageManager Instance
     {
         get
@@ -119,6 +118,13 @@ public class LanguageManager
 
         for (ushort i = 0; i < korean.Words.Length; ++i)
         {
+#if UNITY_EDITOR
+            if (_words.ContainsKey(korean.Words[i]))
+            {
+                Debug.LogError($"\"{korean.Words[i]}\" key already exists.\nLanguageManager - LanguageManager()");
+                continue;
+            }
+#endif
             _words.Add(korean.Words[i], cur.Words[i]);
         }
     }

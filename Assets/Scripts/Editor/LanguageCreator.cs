@@ -10,16 +10,16 @@ using static UnityEditor.EditorGUILayout;
 
 public class LanguageCreator : EditorWindow
 {
+    [SerializeField] private List<string> _currentRuntimeLanguage = null;
     static private LanguageCreator _window = null;
     private Dictionary<string, ushort> _fileLength = new Dictionary<string, ushort>();
-    private List<string> _curRuns = null;
     private FileInfo[] _languageData = null;
     private string[] _curTras = null;
     private string[] _curLans = null;
     private string[] _curFons = null;
+    private SerializedObject _serializedObject = null;
+    private SerializedProperty _property = null;
     private Vector2 scrollPos = Vector2.zero;
-    private string _textArea = null;
-    private string _previousText = null;
     private byte _status = 0;
     private bool _curRunLanToggle = true;
     private bool _lanInfoToggle = true;
@@ -39,10 +39,13 @@ public class LanguageCreator : EditorWindow
         _window.SearchCurrentLanguageFiles();
 
         // New list
-        if (_window._curRuns == null)
+        if (_window._currentRuntimeLanguage == null)
         {
-            _window._curRuns = new List<string>();
+            _window._currentRuntimeLanguage = new List<string>();
         }
+
+        _window._serializedObject = new SerializedObject(_window);
+        _window._property = _window._serializedObject.FindProperty("_currentRuntimeLanguage");
 
         _window.Show();
     }
@@ -56,12 +59,6 @@ public class LanguageCreator : EditorWindow
         LayoutUILanguage();
         Space(10.0f);
         LayoutRuntimeLanguage();
-
-        // Runtime language info
-        _curRunLanToggle = Foldout(_curRunLanToggle, "Current runtime language", true);
-        PrintCurrentRuntimeLanguage();
-
-        Space(20.0f);
 
         // Language file info
         _lanInfoToggle = Foldout(_lanInfoToggle, "Language file info", true);
@@ -257,53 +254,20 @@ public class LanguageCreator : EditorWindow
         // Title
         LabelField("Runtime Language", EditorStyles.boldLabel);
 
-        // Input words
-        _textArea = TextArea(_textArea);
-        BeginHorizontal();
-        if (GUILayout.Button("Add text"))
-        {
-            if (_curRuns.Contains(_textArea))
-            {
-                _status = 6;
-            }
-            else
-            {
-                _curRuns.Add(_textArea);
-                _status = 5;
-            }
-            _previousText = _textArea;
-            _textArea = null;
-        }
-        if (GUILayout.Button("Remove text"))
-        {
-            if (_curRuns.Contains(_textArea))
-            {
-                _curRuns.Remove(_textArea);
-                _status = 7;
-            }
-            else
-            {
-                _status = 8;
-            }
-            _previousText = _textArea;
-            _textArea = null;
-        }
-        EndHorizontal();
-
         // Modified text save
         if (GUILayout.Button("Create Runtime language files."))
         {
-            _status = RuntimeJsonCreate(_curRuns.ToArray());
-            if (_status == 9)
+            _status = RuntimeJsonCreate(_currentRuntimeLanguage.ToArray());
+            if (_status == 5)
             {
-                _status = ForGoogleTranslate(_curRuns.ToArray(), "Runtime");
+                _status = ForGoogleTranslate(_currentRuntimeLanguage.ToArray(), "Runtime");
                 if (_status == 3)
                 {
-                    _status = 11;
+                    _status = 7;
                 }
                 else
                 {
-                    _status = 9;
+                    _status = 5;
                 }
             }
 
@@ -318,30 +282,14 @@ public class LanguageCreator : EditorWindow
         switch (_status)
         {
             case 5:
-                LabelField($"\"{_previousText}\" Successfully added.");
-                break;
-                
-            case 6:
-                LabelField($"\"{_previousText}\" Already exists.");
-                break;
-                
-            case 7:
-                LabelField($"\"{_previousText}\" Successfully removed.");
-                break;
-                
-            case 8:
-                LabelField($"\"{_previousText}\" Does not exists.");
-                break;
-                
-            case 9:
                 LabelField($"Successfully created.");
                 break;
-                
-            case 10:
+
+            case 6:
                 LabelField($"Failed to create runtime language json.");
                 break;
-                
-            case 11:
+
+            case 7:
                 LabelField($"Failed to create translate file.");
                 break;
 
@@ -349,6 +297,11 @@ public class LanguageCreator : EditorWindow
                 LabelField("");
                 break;
         }
+
+        // Current runtime language
+        _serializedObject.Update();
+        PropertyField(_property, true, GUILayout.ExpandHeight(true));
+        _serializedObject.ApplyModifiedProperties();
     }
 
 
@@ -367,11 +320,11 @@ public class LanguageCreator : EditorWindow
             );
 
             // Successful
-            return 9;
+            return 5;
         }
         catch
         {
-            return 10;
+            return 6;
         }
     }
 
@@ -437,7 +390,7 @@ public class LanguageCreator : EditorWindow
     {
         if (_curRunLanToggle)
         {
-            foreach (string word in _curRuns)
+            foreach (string word in _currentRuntimeLanguage)
             {
                 LabelField(word);
             }
@@ -489,7 +442,7 @@ public class LanguageCreator : EditorWindow
             // Loads current registered runtime words..
             if (_languageData[i].Name.Equals("TranslateRuntime.txt"))
             {
-                _curRuns = ReadTranslateFile($"{Application.dataPath}/Data/Translates/TranslateRuntime.txt").ToList();
+                _currentRuntimeLanguage = ReadTranslateFile($"{Application.dataPath}/Data/Translates/TranslateRuntime.txt").ToList();
             }
 
             // Records file type.

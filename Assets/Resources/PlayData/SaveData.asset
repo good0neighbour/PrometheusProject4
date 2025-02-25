@@ -9,15 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 6a70221bfd2d3564fbf16deb2cf7c5a6, type: 3}
   m_Name: SaveData
   m_EditorClassIdentifier: Assembly-CSharp::PlayManager/SaveData
   Variables:
     Year: 0
-    Month: 0
+    Month: 1
+    Fund: 120
     Explore: 0
-    ExploreCost: 0
-    ExploreAmn: 0
-    ExploreIncMlt: 0
+    ExploreCost: 10
+    ExploreAmn: 1
+    ExploreIncMlt: 3
     ExploreNum: 0
-    ExploreSpdMlt: 0
+    ExploreSpdMlt: 0.1
+  Lands: []

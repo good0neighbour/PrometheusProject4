@@ -12,9 +12,7 @@ public class AudioManager : MonoBehaviour
     private AudioSource _bgMusicChannel = null;
     private byte _curChnl = 0;
 
-
     static public AudioManager Instance { get; private set; }
-
 
 #if UNITY_EDITOR
     public byte NumOfChannel

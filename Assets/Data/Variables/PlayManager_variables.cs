@@ -1,12 +1,7 @@
 using System;
-using System.Collections.Generic;
-using UnityEngine;
 
 public partial class PlayManager
 {
-	// Field
-	private PlayData _data = new PlayData();
-
 	// Properties
 	public ushort Year{ get { return _data.Year; } set { _data.Year = value; } }
 	public byte Month{ get { return _data.Month; } set { _data.Month = value; } }
@@ -18,17 +13,9 @@ public partial class PlayManager
 	public sbyte ExploreNum{ get { return _data.ExploreNum; } set { _data.ExploreNum = value; } }
 	public float ExploreSpdMlt{ get { return _data.ExploreSpdMlt; } set { _data.ExploreSpdMlt = value; } }
 
-	// Inner class
-	[CreateAssetMenu(fileName = "SaveData", menuName = "PrometheusMission/SaveData")]
-	private class SaveData : ScriptableObject
-	{
-		public PlayData Variables;
-		public List<Land> Lands;
-	}
-
 	// Structure
 	[Serializable]
-	private struct PlayData
+	public struct PlayData
 	{
 		public ushort Year;
 		public byte Month;

@@ -5,6 +5,7 @@ static public class Constants
     // Game
     public const byte MAX_GAME_SPEED = 4;
     public const float MONTH_PER_SEC = 1.0f;
+    public const float MESSAGE_SHOW_TIME = 2.0f;
 
     // Resources
     public const byte MAX_LAND_NUM = 64;

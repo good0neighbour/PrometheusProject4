@@ -15,7 +15,6 @@ public class VariableCreator : EditorWindow
     private SerializedProperty _property = null;
     private Vector2 scrollPos = Vector2.zero;
     private string _structureName = null;
-    private string _fieldName = null;
     private byte _status = 0;
 
 
@@ -42,7 +41,6 @@ public class VariableCreator : EditorWindow
     {
         // Structure data
         _structureName = TextField("Structure Name", _structureName);
-        _fieldName = TextField("Field Name", _fieldName);
 
         // Save button
         if (GUILayout.Button("Create varialbe script"))
@@ -91,7 +89,7 @@ public class VariableCreator : EditorWindow
     {
         try
         {
-            File.WriteAllText($"{Application.dataPath}/Data/Variables/Variables.json", JsonUtility.ToJson(new VariableJson(_data.ToArray(), _structureName, _fieldName)).ToString());
+            File.WriteAllText($"{Application.dataPath}/Data/Variables/Variables.json", JsonUtility.ToJson(new VariableJson(_data.ToArray(), _structureName)).ToString());
             return 1;
         }
         catch
@@ -112,16 +110,10 @@ public class VariableCreator : EditorWindow
             builder.Append(
                 "\n\npublic partial class PlayManager\n{"
             );
-            builder.Append(
-                "\n\t// Field"
-            );
-            builder.Append(
-                $"\n\tprivate {_structureName} {_fieldName} = new {_structureName}();"
-            );
 
             // Variables
             builder.Append(
-                "\n\n\t// Properties"
+                "\n\t// Properties"
             );
             for (ushort i = 0; i < _data.Count; ++i)
             {
@@ -132,23 +124,6 @@ public class VariableCreator : EditorWindow
                     $"{{ get {{ return _data.{_data[i].Name}; }} set {{ _data.{_data[i].Name} = value; }} }}"
                 );
             }
-
-            // Scriptable object
-            builder.Append(
-                "\n\n\t// Inner class"
-            );
-            builder.Append(
-                "\n\t[CreateAssetMenu(fileName = \"SaveData\", menuName = \"PrometheusMission/SaveData\")]"
-            );
-            builder.Append(
-                "\n\tprivate class SaveData : ScriptableObject\n\t{"
-            );
-            builder.Append(
-                $"\n\t\tpublic {_structureName} Variables;"
-            );
-            builder.Append(
-                $"\n\t\tpublic List<Land> Lands;\n\t}}"
-            );
 
             // Structure
             builder.Append(
@@ -190,7 +165,6 @@ public class VariableCreator : EditorWindow
             VariableJson json = JsonUtility.FromJson<VariableJson>(File.ReadAllText($"{Application.dataPath}/Data/Variables/Variables.json"));
             _data = json.Variables.ToList();
             _structureName = json.StructureName;
-            _fieldName = json.FieldName;
         }
         catch
         {
@@ -234,13 +208,11 @@ public class VariableCreator : EditorWindow
     {
         public VariableData[] Variables;
         public string StructureName;
-        public string FieldName;
 
-        public VariableJson(VariableData[] variables, string structureName, string fieldName)
+        public VariableJson(VariableData[] variables, string structureName)
         {
             Variables = variables;
             StructureName = structureName;
-            FieldName = fieldName;
         }
     }
 }
