@@ -14,25 +14,34 @@ public class Land
 
     public Land RandomResources()
     {
-        if (Random.Range(0, 100) < STONE_POS)
+        bool loop = true;
+        while (loop)
         {
-            Stone = (byte)Random.Range(1, MAX_STONE);
-        }
-        if (Random.Range(0, 100) < IRON_POS)
-        {
-            Iron = (byte)Random.Range(1, MAX_IRON);
-        }
-        if (Random.Range(0, 100) < HEAVY_POS)
-        {
-            HeavyMetal = (byte)Random.Range(1, MAX_HEAVY);
-        }
-        if (Random.Range(0, 100) < PRECIOUS_POS)
-        {
-            PreciousMetal = (byte)Random.Range(1, MAX_PRECIOUS);
-        }
-        if (Random.Range(0, 100) < NUCLEAR_POS)
-        {
-            Nuclear = (byte)Random.Range(1, MAX_NUCLEAR);
+            if (Random.Range(0, 100) < STONE_POS)
+            {
+                Stone = (byte)Random.Range(1, MAX_STONE);
+                loop = false;
+            }
+            if (Random.Range(0, 100) < IRON_POS)
+            {
+                Iron = (byte)Random.Range(1, MAX_IRON);
+                loop = false;
+            }
+            if (Random.Range(0, 100) < HEAVY_POS)
+            {
+                HeavyMetal = (byte)Random.Range(1, MAX_HEAVY);
+                loop = false;
+            }
+            if (Random.Range(0, 100) < PRECIOUS_POS)
+            {
+                PreciousMetal = (byte)Random.Range(1, MAX_PRECIOUS);
+                loop = false;
+            }
+            if (Random.Range(0, 100) < NUCLEAR_POS)
+            {
+                Nuclear = (byte)Random.Range(1, MAX_NUCLEAR);
+                loop = false;
+            }
         }
 
         return this;

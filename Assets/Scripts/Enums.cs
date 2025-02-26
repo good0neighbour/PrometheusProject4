@@ -20,7 +20,7 @@ public enum AudioType
     End
 }
 
-public enum GamePause
+public enum GamePauseType
 {
     Pause = 1,
     Resume = -1

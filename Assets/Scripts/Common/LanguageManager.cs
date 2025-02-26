@@ -10,7 +10,6 @@ public class LanguageManager
     static private LanguageManager _instance = null;
     private GameDelegate _onLanguageChange = null;
     private Dictionary<string, string> _words = new Dictionary<string, string>();
-    private List<LanguageTranslator> _translators = new List<LanguageTranslator>();
 
     static public LanguageManager Instance
     {
@@ -55,15 +54,19 @@ public class LanguageManager
     {
         // UI language setting
         string[] words = LoadUILanguage("Korean");
-        _translators.Clear();
-        foreach (LanguageTranslator laTr in GameObject.FindObjectsByType<LanguageTranslator>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        List<LanguageTranslator> translators = new List<LanguageTranslator>();
+        foreach (LanguageTranslator laTr in UnityEngine.Object.FindObjectsByType<LanguageTranslator>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
-            _translators.Add(laTr);
+            translators.Add(laTr);
             laTr.SetWordIndex((ushort)Array.IndexOf(words, laTr.GetOriginalWord()));
         }
 
         // Adopt language setting
-        LanguageChange(language);
+        LanguageChange(
+            language,
+            translators.ToArray(),
+            UnityEngine.Object.FindObjectsByType<FontSwitcher>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+        );
     }
 
 
@@ -73,19 +76,11 @@ public class LanguageManager
     /// <param name="language">Selected language</param>
     public void LanguageChange(string language)
     {
-        // UI language change
-        string[] words = LoadUILanguage(language);
-        TMP_FontAsset font = Resources.Load<TMP_FontAsset>($"Fonts/Font{language}");
-        foreach (LanguageTranslator laTr in _translators)
-        {
-            laTr.SetUIWord(words[laTr.GetWordIndex()], font);
-        }
-
-        // Runtime language change
-        LoadRuntimeLanguage(language);
-
-        // On language change
-        _onLanguageChange?.Invoke();
+        LanguageChange(
+            language,
+            UnityEngine.Object.FindObjectsByType<LanguageTranslator>(FindObjectsInactive.Include, FindObjectsSortMode.None),
+            UnityEngine.Object.FindObjectsByType<FontSwitcher>(FindObjectsInactive.Include, FindObjectsSortMode.None)
+        );
     }
 
 
@@ -127,6 +122,30 @@ public class LanguageManager
 #endif
             _words.Add(korean.Words[i], cur.Words[i]);
         }
+    }
+
+
+    private void LanguageChange(string language, LanguageTranslator[] translators, FontSwitcher[] switcher)
+    {
+        // UI language change
+        string[] words = LoadUILanguage(language);
+        TMP_FontAsset font = Resources.Load<TMP_FontAsset>($"Fonts/Font{language}");
+        foreach (LanguageTranslator laTr in translators)
+        {
+            laTr.SetUIWord(words[laTr.GetWordIndex()], font);
+        }
+
+        // Font change
+        foreach (FontSwitcher fs in switcher)
+        {
+            fs.SwitchFont(font);
+        }
+
+        // Runtime language change
+        LoadRuntimeLanguage(language);
+
+        // On language change
+        _onLanguageChange?.Invoke();
     }
 
 

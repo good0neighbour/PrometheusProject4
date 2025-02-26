@@ -41,9 +41,9 @@ public class MessageManager : MonoBehaviour
     public void EnqueueMessage(string content)
     {
         // Entire texts to show
-        string entireText = $"{PlayManager.Instance.Year.ToString()}{LanguageManager.Instance["³â"]} {PlayManager.Instance.Month.ToString()}{LanguageManager.Instance["¿ù"]}\n{content}";
+        string entireText = $"{PlayManager.Instance.Year.ToString()}{LanguageManager.Instance[TEX_YEAR]} {PlayManager.Instance.Month.ToString()}{LanguageManager.Instance[TEX_MONTH]}\n{content}";
 
-        if (_time >= MESSAGE_SHOW_TIME)
+        if (_time >= MESSAGE_SHOW_TIME && !PlayManager.Instance.GamePause)
         {
             // Shows instantly.
             ShowMessage(entireText);
@@ -99,6 +99,14 @@ public class MessageManager : MonoBehaviour
     {
         while (true)
         {
+            // Check game pause
+            if (PlayManager.Instance.GamePause)
+            {
+                yield return null;
+                continue;
+            }
+
+            // Time count
             _time += Time.deltaTime;
             if (_time >= MESSAGE_SHOW_TIME)
             {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
@@ -10,7 +11,7 @@ using static UnityEditor.EditorGUILayout;
 
 public class LanguageCreator : EditorWindow
 {
-    [SerializeField] private List<string> _currentRuntimeLanguage = null;
+    [SerializeField] private List<RunLanData> _currentRuntimeLanguage = null;
     static private LanguageCreator _window = null;
     private Dictionary<string, ushort> _fileLength = new Dictionary<string, ushort>();
     private FileInfo[] _languageData = null;
@@ -20,8 +21,9 @@ public class LanguageCreator : EditorWindow
     private SerializedObject _serializedObject = null;
     private SerializedProperty _property = null;
     private Vector2 scrollPos = Vector2.zero;
+    private string _searchText = null;
+    private string _searchResu = null;
     private byte _status = 0;
-    private bool _curRunLanToggle = true;
     private bool _lanInfoToggle = true;
     private bool _fontInfoToggle = true;
 
@@ -38,10 +40,18 @@ public class LanguageCreator : EditorWindow
         // Searches language files.
         _window.SearchCurrentLanguageFiles();
 
-        // New list
-        if (_window._currentRuntimeLanguage == null)
+        try
         {
-            _window._currentRuntimeLanguage = new List<string>();
+            // Loads current registered runtime words.
+            _window._currentRuntimeLanguage = JsonUtility.FromJson<RunLanJson>(File.ReadAllText($"{Application.dataPath}/Data/Variables/RuntimeLanguage.json")).Data.ToList();
+        }
+        catch
+        {
+            // New list
+            if (_window._currentRuntimeLanguage == null)
+            {
+                _window._currentRuntimeLanguage = new List<RunLanData>();
+            }
         }
 
         _window._serializedObject = new SerializedObject(_window);
@@ -53,12 +63,34 @@ public class LanguageCreator : EditorWindow
 
     private void OnGUI()
     {
+        // Button layout
+        ButtonLayout();
+
+        // Runtime language search
+        LabelField("Runtime language search");
+        BeginHorizontal();
+        _searchText = TextField(_searchText);
+        if (GUILayout.Button("Search", GUILayout.MaxWidth(100.0f)))
+        {
+            for (ushort i = 0; i < _currentRuntimeLanguage.Count; ++i)
+            {
+                _searchResu = "Doesn't exist.";
+                if (_currentRuntimeLanguage[i].Text.Equals(_searchText))
+                {
+                    _searchResu = $"TEX_{_currentRuntimeLanguage[i].ConstName.ToUpper()}";
+                    break;
+                }
+            }
+        }
+        EndHorizontal();
+        LabelField(_searchResu);
+
         scrollPos = BeginScrollView(scrollPos);
 
-        Space(20.0f);
-        LayoutUILanguage();
-        Space(10.0f);
-        LayoutRuntimeLanguage();
+        // Current runtime language
+        _serializedObject.Update();
+        PropertyField(_property, true, GUILayout.ExpandHeight(true));
+        _serializedObject.ApplyModifiedProperties();
 
         // Language file info
         _lanInfoToggle = Foldout(_lanInfoToggle, "Language file info", true);
@@ -74,11 +106,9 @@ public class LanguageCreator : EditorWindow
     }
 
 
-    private void LayoutUILanguage()
+    private void ButtonLayout()
     {
-        // Title
-        LabelField("UI Language", EditorStyles.boldLabel);
-
+        // Finds all UI language from the scenes.
         if (GUILayout.Button("Create UI language files from all scenes"))
         {
             string[] words = null;
@@ -97,7 +127,37 @@ public class LanguageCreator : EditorWindow
             SearchCurrentLanguageFiles();
         }
 
-        if (GUILayout.Button("Create Language Json based on translate files"))
+        // Current runtime language text save
+        if (GUILayout.Button("Create Runtime language files with the texts"))
+        {
+            string[] textArray = null;
+            _status = RunLanDataScriptCreate(out textArray);
+            if (_status == 5)
+            {
+                _status = RuntimeJsonCreate(textArray);
+                if (_status == 5)
+                {
+                    _status = ForGoogleTranslate(textArray, "Runtime");
+                    if (_status == 3)
+                    {
+                        _status = 7;
+                    }
+                    else
+                    {
+                        _status = 5;
+                    }
+                }
+            }
+
+            // Refresh
+            AssetDatabase.Refresh();
+
+            // Searches language files again.
+            SearchCurrentLanguageFiles();
+        }
+
+        // Creates json files from translate files.
+        if (GUILayout.Button("Create all language json files based on translate files"))
         {
             // Creates json
             _status = TextToJson();
@@ -113,7 +173,7 @@ public class LanguageCreator : EditorWindow
         switch (_status)
         {
             case 1:
-                LabelField("Successfully created.");
+                LabelField("Successfully created UI language.");
                 break;
 
             case 2:
@@ -125,7 +185,28 @@ public class LanguageCreator : EditorWindow
                 break;
 
             case 4:
-                LabelField("Failed to create language files.");
+                LabelField("Failed to create language json files.");
+                break;
+
+            case 5:
+                //LabelField($"Successfully created runtime language.");
+                _window.Close();
+                break;
+
+            case 6:
+                LabelField($"Failed to create runtime language json.");
+                break;
+
+            case 7:
+                LabelField($"Failed to create translate file.");
+                break;
+
+            case 8:
+                LabelField($"Failed to create constant script.");
+                break;
+
+            case 9:
+                LabelField($"Successfully created language json files.");
                 break;
 
             default:
@@ -221,7 +302,7 @@ public class LanguageCreator : EditorWindow
                 try
                 {
                     // Doesn't make translate file into json.
-                    if (file.Name.Equals("TranslateUI.txt"))
+                    if (file.Name.Equals("TranslateUI.txt") || file.Name.Equals("TranslateRuntime.txt"))
                     {
                         break;
                     }
@@ -240,7 +321,7 @@ public class LanguageCreator : EditorWindow
                     continue;
                 }
             }
-            return 1;
+            return 9;
         }
         catch
         {
@@ -249,59 +330,38 @@ public class LanguageCreator : EditorWindow
     }
 
 
-    private void LayoutRuntimeLanguage()
+    private byte RunLanDataScriptCreate(out string[] textArray)
     {
-        // Title
-        LabelField("Runtime Language", EditorStyles.boldLabel);
-
-        // Modified text save
-        if (GUILayout.Button("Create Runtime language files."))
+        try
         {
-            _status = RuntimeJsonCreate(_currentRuntimeLanguage.ToArray());
-            if (_status == 5)
+            // Creates json file.
+            File.WriteAllText(
+                $"{Application.dataPath}/Data/Variables/RuntimeLanguage.json",
+                JsonUtility.ToJson(new RunLanJson(_currentRuntimeLanguage.ToArray()), true)
+            );
+
+            // Builds constants script.
+            StringBuilder builder = new StringBuilder("static public partial class Constants\n{");
+            textArray = new string[_currentRuntimeLanguage.Count];
+            for (ushort i = 0; i < _currentRuntimeLanguage.Count; ++i)
             {
-                _status = ForGoogleTranslate(_currentRuntimeLanguage.ToArray(), "Runtime");
-                if (_status == 3)
-                {
-                    _status = 7;
-                }
-                else
-                {
-                    _status = 5;
-                }
+                builder.Append($"\n\tpublic const string TEX_{_currentRuntimeLanguage[i].ConstName.ToUpper()} = \"{_currentRuntimeLanguage[i].Text}\";");
+
+                // Text array
+                textArray[i] = _currentRuntimeLanguage[i].Text;
             }
+            builder.Append("\n}");
 
-            // Refresh
-            AssetDatabase.Refresh();
+            // Creates constants script.
+            File.WriteAllText($"{Application.dataPath}/Data/Variables/Constants_texts.cs", builder.ToString());
 
-            // Searches language files again.
-            SearchCurrentLanguageFiles();
+            return 5;
         }
-
-        // Print status
-        switch (_status)
+        catch
         {
-            case 5:
-                LabelField($"Successfully created.");
-                break;
-
-            case 6:
-                LabelField($"Failed to create runtime language json.");
-                break;
-
-            case 7:
-                LabelField($"Failed to create translate file.");
-                break;
-
-            default:
-                LabelField("");
-                break;
+            textArray = null;
+            return 8;
         }
-
-        // Current runtime language
-        _serializedObject.Update();
-        PropertyField(_property, true, GUILayout.ExpandHeight(true));
-        _serializedObject.ApplyModifiedProperties();
     }
 
 
@@ -386,18 +446,6 @@ public class LanguageCreator : EditorWindow
     }
 
 
-    private void PrintCurrentRuntimeLanguage()
-    {
-        if (_curRunLanToggle)
-        {
-            foreach (string word in _currentRuntimeLanguage)
-            {
-                LabelField(word);
-            }
-        }
-    }
-
-
     private void PrintCurrentFont(float maxWidth)
     {
         if (_fontInfoToggle)
@@ -439,12 +487,6 @@ public class LanguageCreator : EditorWindow
         _curTras = new string[_languageData.Length];
         for (byte i = 0; i < _languageData.Length; ++i)
         {
-            // Loads current registered runtime words..
-            if (_languageData[i].Name.Equals("TranslateRuntime.txt"))
-            {
-                _currentRuntimeLanguage = ReadTranslateFile($"{Application.dataPath}/Data/Translates/TranslateRuntime.txt").ToList();
-            }
-
             // Records file type.
             if (_languageData[i].Name.Contains("Translate"))
             {
@@ -526,5 +568,25 @@ public class LanguageCreator : EditorWindow
 
         // Retruen
         return words.ToArray();
+    }
+
+
+    [Serializable]
+    private struct RunLanData
+    {
+        public string Text;
+        public string ConstName;
+    }
+
+
+    [Serializable]
+    private struct RunLanJson
+    {
+        public RunLanData[] Data;
+
+        public RunLanJson(RunLanData[] data)
+        {
+            Data = data;
+        }
     }
 }

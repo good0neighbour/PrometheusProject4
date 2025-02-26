@@ -13,7 +13,7 @@ public class PlayMenuSectionMove : Editor
             return;
         }
 
-        pmm.ButtonSection(true);
+        pmm.ButtonSection(-1);
     }
 
     [MenuItem("PrometheusMission/ScenePlay Section Move/Right")]
@@ -26,6 +26,6 @@ public class PlayMenuSectionMove : Editor
             return;
         }
 
-        pmm.ButtonSection(false);
+        pmm.ButtonSection(1);
     }
 }

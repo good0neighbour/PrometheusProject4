@@ -3,6 +3,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using static Constants;
 
 public class PlayMenuManager : MonoBehaviour
 {
@@ -44,17 +45,32 @@ public class PlayMenuManager : MonoBehaviour
 
     /* ==================== Public Methods ==================== */
 
-    public void ButtonSection(bool isLeft)
+    public void ButtonSection(int direction)
     {
-        if (isLeft)
+        // Section move
+        _currentSection += (sbyte)direction;
+
+        // Section active
+        switch (_currentSection)
         {
-            // Left move
-            SectionMove(-1);
-        }
-        else
-        {
-            // Right move
-            SectionMove(1);
+            case -1:
+                SectionActive(true, false);
+                break;
+
+            case 0:
+                SectionActive(false, false);
+                break;
+
+            case 1:
+                SectionActive(false, true);
+                break;
+
+            default:
+#if UNITY_EDITOR
+                Debug.LogError($"Wrong section number.\n{name}, PlayMenuManager, _currentSection : {_currentSection.ToString()}");
+                _currentSection -= (sbyte)direction;
+#endif
+                break;
         }
 
         // Audio play
@@ -107,14 +123,14 @@ public class PlayMenuManager : MonoBehaviour
     {
         if (_isPaused)
         {
-            PlayManager.Instance.SetGamePause(GamePause.Resume);
+            PlayManager.Instance.SetGamePause(false);
             _pauseButtonText.color = _deactiveColour;
             _speedButtonText.color = _activeColour;
             _isPaused = false;
         }
         else
         {
-            PlayManager.Instance.SetGamePause(GamePause.Pause);
+            PlayManager.Instance.SetGamePause(true);
             _pauseButtonText.color = _activeColour;
             _speedButtonText.color = _deactiveColour;
             _isPaused = true;
@@ -171,36 +187,6 @@ public class PlayMenuManager : MonoBehaviour
 
     /* ==================== Private Methods ==================== */
 
-    private void SectionMove(sbyte direction)
-    {
-        // Section move
-        _currentSection += direction;
-
-        // Section active
-        switch (_currentSection)
-        {
-            case -1:
-                SectionActive(true, false);
-                return;
-
-            case 0:
-                SectionActive(false, false);
-                return;
-
-            case 1:
-                SectionActive(false, true);
-                return;
-
-            default:
-#if UNITY_EDITOR
-                Debug.LogError($"Wrong section number.\n{name}, PlayMenuManager, _currentSection : {_currentSection.ToString()}");
-                _currentSection -= direction;
-#endif
-                return;
-        }
-    }
-
-
     private void SectionActive(bool left, bool right)
     {
 #if UNITY_EDITOR
@@ -221,6 +207,12 @@ public class PlayMenuManager : MonoBehaviour
         _PlayMenus[2].SetActive(right);
         _MenuButtons[0].SetActive(left);
         _MenuButtons[1].SetActive(right);
+    }
+
+
+    private void OnLateMonthChange()
+    {
+        _dateText.text = $"{PlayManager.Instance.Year}{LanguageManager.Instance[TEX_YEAR]} {PlayManager.Instance.Month}{LanguageManager.Instance[TEX_MONTH]}";
     }
 
 
@@ -313,11 +305,42 @@ public class PlayMenuManager : MonoBehaviour
             "_Colour",
             new Color(_normalBrightness, _normalBrightness, _normalBrightness, _noiseAlpha)
         );
+
+        // On month change
+        PlayManager.Instance.AddOnLateMonthChange(OnLateMonthChange);
     }
 
 
     private void Update()
     {
-        _dateText.text = $"{PlayManager.Instance.Year}{LanguageManager.Instance["³â"]} {PlayManager.Instance.Month}{LanguageManager.Instance["¿ù"]}";
+        if (PlayManager.Instance.GamePause)
+        {
+            return;
+        }
+        else if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            if (_currentSection == 0)
+            {
+                GameMenu.Instance.ButtonGameMenuActive(true);
+            }
+            else
+            {
+                ButtonSection(-_currentSection);
+            }
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.A))
+        {
+            if (_currentSection > -1)
+            {
+                ButtonSection(-1);
+            }
+        }
+        else if (Input.GetKeyUp(KeyCode.RightArrow) || Input.GetKeyUp(KeyCode.D))
+        {
+            if (_currentSection < 1)
+            {
+                ButtonSection(1);
+            }
+        }
     }
 }

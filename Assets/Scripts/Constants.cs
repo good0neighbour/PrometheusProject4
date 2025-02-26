@@ -1,6 +1,6 @@
 using UnityEngine;
 
-static public class Constants
+static public partial class Constants
 {
     // Game
     public const byte MAX_GAME_SPEED = 4;

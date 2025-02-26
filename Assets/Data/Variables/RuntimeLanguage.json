@@ -1,0 +1,68 @@
+{
+    "Data": [
+        {
+            "Text": "년",
+            "ConstName": "year"
+        },
+        {
+            "Text": "월",
+            "ConstName": "month"
+        },
+        {
+            "Text": "탐사 장비",
+            "ConstName": "explorer"
+        },
+        {
+            "Text": "자금",
+            "ConstName": "fund"
+        },
+        {
+            "Text": "토지",
+            "ConstName": "land"
+        },
+        {
+            "Text": "석제",
+            "ConstName": "stone"
+        },
+        {
+            "Text": "철",
+            "ConstName": "iron"
+        },
+        {
+            "Text": "중금속",
+            "ConstName": "heavy"
+        },
+        {
+            "Text": "귀금속",
+            "ConstName": "precious"
+        },
+        {
+            "Text": "핵물질",
+            "ConstName": "nuclear"
+        },
+        {
+            "Text": "새로운 토지를 발견했습니다.",
+            "ConstName": "mes_newland"
+        },
+        {
+            "Text": "건축을 위한 기본 재료입니다.",
+            "ConstName": "des_stone"
+        },
+        {
+            "Text": "고급 건축, 산업 등에 필요한 활용성 높은 자원입니다.",
+            "ConstName": "des_iron"
+        },
+        {
+            "Text": "첨단 산업을 위한 자원입니다.",
+            "ConstName": "des_heavy"
+        },
+        {
+            "Text": "명품 산업을 위한 자원입니다.",
+            "ConstName": "des_precious"
+        },
+        {
+            "Text": "에너지 생산 및 대량살상 무기를 제작하는 데 사용됩니다.",
+            "ConstName": "des_nuclear"
+        }
+    ]
+}

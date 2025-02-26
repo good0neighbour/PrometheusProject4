@@ -11,10 +11,9 @@ public partial class PlayManager : MonoBehaviour
     [SerializeField][Range(0.0f, -0.005f)] private float _surfaceRotation = -0.003125f;
     [SerializeField][Range(0.0f, -0.005f)] private float _cloudRotation = -0.0015625f;
     [SerializeField][Range(0.0f, 0.01f)] private float _lightRotation = 0.005f;
-    [Header("UI")]
-    [SerializeField] private Exploration _exploration = null;
     private GameDelegate _onUpdate = null;
     private GameDelegate _onMonthChange = null;
+    private GameDelegate _onLateMonthChange = null;
     private GameDelegate _onYearChange = null;
     private Material _planetMaterial = null;
     private PlayData _data = new PlayData();
@@ -22,12 +21,13 @@ public partial class PlayManager : MonoBehaviour
     private float _planetCloudRot = 0.0f;
     private float _planetlightRot = Mathf.PI;
     private float _time = 0.0f;
+    private sbyte _gamePause = 0;
     private byte _gameSpeed = 1;
-    private byte _gamePause = 0;
 
     static public PlayManager Instance { get; private set; }
-    public float DeltaTime { get; private set; }
     public List<Land> Lands { get; private set; }
+    public float DeltaTime { get; private set; }
+    public bool GamePause { get; private set; }
 
 
 
@@ -62,10 +62,37 @@ public partial class PlayManager : MonoBehaviour
     /// Adds the number of reason to pause game.
     /// </summary>
     /// <param name="pause">Pause or resume</param>
-    public void SetGamePause(GamePause pause)
+    public void SetGamePause(bool pause)
     {
-        // Adds the number of reason to pause game.
-        _gamePause += (byte)pause;
+        // Error check
+        if (pause)
+        {
+            // Adds the number of reason to pause game.
+            ++_gamePause;
+        }
+        else
+        {
+            if (_gamePause <= 0)
+            {
+#if UNITY_EDITOR
+                Debug.LogError("Too many resume calls.\nPlayManager - SetGamePause(GamePauseType pause)");
+#endif
+                return;
+            }
+
+            // Removes the number of reason to pause game.
+            --_gamePause;
+        }
+
+        // Game pause or not
+        if (_gamePause > 0)
+        {
+            GamePause = true;
+        }
+        else
+        {
+            GamePause = false;
+        }
 
 #if UNITY_EDITOR
         Debug.Log($"_gamePause: {_gamePause}");
@@ -90,6 +117,16 @@ public partial class PlayManager : MonoBehaviour
     public void AddOnMonthChange(GameDelegate onMonthChange)
     {
         _onMonthChange += onMonthChange;
+    }
+
+
+    /// <summary>
+    /// Adds function to onLateMonthChange delegate.
+    /// </summary>
+    /// <param name="onLateMonthChange">Function to add</param>
+    public void AddOnLateMonthChange(GameDelegate onLateMonthChange)
+    {
+        _onLateMonthChange += onLateMonthChange;
     }
 
 
@@ -133,7 +170,7 @@ public partial class PlayManager : MonoBehaviour
                 Lands.Add(data.Lands[i]);
 
                 // Land list UI
-                _exploration.AddLand();
+                Exploration.Instance.AddLand();
             }
         }
     }
@@ -175,17 +212,11 @@ public partial class PlayManager : MonoBehaviour
 
     private void Update()
     {
-        #region Game Pause
-        switch (_gamePause)
+        // Game Pause
+        if (GamePause)
         {
-            case 0:
-                break;
-
-            default:
-                DeltaTime = 0.0f;
-                return;
+            return;
         }
-        #endregion
 
         // Delta time
         DeltaTime = Time.deltaTime * _gameSpeed;
@@ -212,6 +243,9 @@ public partial class PlayManager : MonoBehaviour
                 // Month pass
                 ++_data.Month;
             }
+
+            // Late monthly move
+            _onLateMonthChange?.Invoke();
         }
         _time += DeltaTime;
         #endregion
@@ -229,7 +263,7 @@ public partial class PlayManager : MonoBehaviour
                 Lands.Add(new Land().RandomResources());
 
                 // Land list UI
-                _exploration.AddLand();
+                Exploration.Instance.AddLand();
 
                 // Show Message
                 MessageManager.Instance.EnqueueMessage("새로운 토지를 발견했습니다.");
