@@ -8,4 +8,10 @@ public class TechContentFacilities : TechContentBase
     {
         return Resources.Load<GameObject>("Prefabs/NodeFacility");
     }
+
+
+    protected override TechTreeData GetTechTreeData()
+    {
+        return Resources.Load<TechTreeData>("TechTrees/Facilities");
+    }
 }

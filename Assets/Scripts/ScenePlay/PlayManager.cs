@@ -7,8 +7,6 @@ public partial class PlayManager : MonoBehaviour
 {
     /* ==================== Fields ==================== */
 
-    [Header("Tech Tree Data")]
-    [SerializeField] private TechTreeData _facilitiesData = null;
     [Header("Planet")]
     [SerializeField][Range(0.0f, -0.005f)] private float _surfaceRotation = -0.003125f;
     [SerializeField][Range(0.0f, -0.005f)] private float _cloudRotation = -0.0015625f;
@@ -31,7 +29,6 @@ public partial class PlayManager : MonoBehaviour
     static public PlayManager Instance { get; private set; }
     public List<Land> Lands { get; private set; }
     public List<City> Cities { get; private set; }
-    public TechTreeData FacilitiesData { get { return _facilitiesData; } }
     public float DeltaTime { get; private set; }
     public bool GamePause { get; private set; }
 

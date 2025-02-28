@@ -4,6 +4,7 @@ abstract public class TechContentBase : MonoBehaviour
 {
     /* ==================== Fields ==================== */
 
+    [SerializeField] private RectTransform _cursor = null;
     [SerializeField] private Vector2 _nodeSize = new Vector2(120.0f, 120.0f);
     [SerializeField] private Vector2 _pivot = new Vector2(0.5f, 0.5f);
     private Node[] _nodes = null;
@@ -12,6 +13,9 @@ abstract public class TechContentBase : MonoBehaviour
 
     /* ==================== Public Methods ==================== */
 
+    /// <summary>
+    /// Shows available nodes and sets content size and pivot.
+    /// </summary>
     public void ShowContent()
     {
         RectTransform rt = transform.parent.GetComponent<RectTransform>();
@@ -39,10 +43,27 @@ abstract public class TechContentBase : MonoBehaviour
     }
 
 
+    public TechElement GetElement(byte index)
+    {
+        return _nodes[index].Data;
+    }
+
+
+    /// <summary>
+    /// Sets cursor position.
+    /// </summary>
+    /// <param name="pos">Position where to move.</param>
+    public void SetCursorPositoin(Vector3 pos)
+    {
+        _cursor.anchoredPosition = pos;
+    }
+
+
 
     /* ==================== Protected Methods ==================== */
 
     abstract protected GameObject GetSampleNode();
+    abstract protected TechTreeData GetTechTreeData();
 
 
 
@@ -51,7 +72,7 @@ abstract public class TechContentBase : MonoBehaviour
     private void Start()
     {
         // Loads data.
-        TechTreeData data = PlayManager.Instance.FacilitiesData;
+        TechTreeData data = GetTechTreeData();
 
         // Node display
         _nodes = new Node[data.Elements.Length];
@@ -73,8 +94,16 @@ abstract public class TechContentBase : MonoBehaviour
             _nodes[i].MaxPos.x += _nodeSize.x;
             _nodes[i].MaxPos.y += _nodeSize.y;
 
+            // Sets node index.
+            _nodes[i].TechNode.GetComponent<NodeButton>().Index = i;
+
+            // Sets cursor size.
+            _cursor.sizeDelta = _nodeSize;
+
+            // Temporary
             _nodes[i].TechNode.SetActive(true);
         }
+        // Temporary
         ShowContent();
     }
 
@@ -95,6 +124,7 @@ abstract public class TechContentBase : MonoBehaviour
             Data = data;
             MaxPos.x = data.XPos * nodeSize.x;
             MaxPos.y = data.YPos * nodeSize.y;
+            // Temporary
             IsShowed = true;
         }
     }

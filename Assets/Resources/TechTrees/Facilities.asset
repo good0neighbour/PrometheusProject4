@@ -28,6 +28,10 @@ MonoBehaviour:
     XPos: 0
     YPos: 0
     Requirements: []
+    Unlocks:
+    - Type: 0
+      Index: 1
+      Name: "\uD0DC\uC591\uAD11\uBC1C\uC804\uC18C"
   - Name: "\uD0DC\uC591\uAD11\uBC1C\uC804\uC18C"
     Description: "\uD0DC\uC591\uAD11\uC744 \uC774\uC6A9\uD574 \uC804\uB825\uC744
       \uC0DD\uC0B0\uD558\uB294 \uC2DC\uC124\uC785\uB2C8\uB2E4."
@@ -45,6 +49,11 @@ MonoBehaviour:
     Requirements:
     - Type: 0
       Index: 0
+      Name: "\uAC1C\uBCC4\uBC1C\uC804"
+    Unlocks:
+    - Type: 0
+      Index: 2
+      Name: "\uC6D0\uC790\uB825\uBC1C\uC804\uC18C"
   - Name: "\uC6D0\uC790\uB825\uBC1C\uC804\uC18C"
     Description: "\uD575 \uBD84\uC5F4\uC744 \uC774\uC6A9\uD574 \uC804\uAE30\uB97C
       \uC0DD\uC0B0\uD558\uB294 \uC2DC\uC124\uC785\uB2C8\uB2E4."
@@ -62,6 +71,11 @@ MonoBehaviour:
     Requirements:
     - Type: 0
       Index: 1
+      Name: "\uD0DC\uC591\uAD11\uBC1C\uC804\uC18C"
+    Unlocks:
+    - Type: 0
+      Index: 3
+      Name: "\uD575\uC735\uD569\uBC1C\uC804\uC18C"
   - Name: "\uD575\uC735\uD569\uBC1C\uC804\uC18C"
     Description: "\uD575\uC735\uD569\uC73C\uB85C \uC5D0\uB108\uC9C0\uB97C \uC0DD\uC131\uD558\uB294
       \uC2DC\uC124\uC785\uB2C8\uB2E4."
@@ -79,6 +93,8 @@ MonoBehaviour:
     Requirements:
     - Type: 0
       Index: 2
+      Name: "\uC6D0\uC790\uB825\uBC1C\uC804\uC18C"
+    Unlocks: []
   - Name: "\uACE1\uCC3D"
     Description: "\uC2DD\uB7C9\uC744 \uC800\uC7A5\uD569\uB2C8\uB2E4."
     FundCost: 50
@@ -93,6 +109,10 @@ MonoBehaviour:
     XPos: 1
     YPos: 0
     Requirements: []
+    Unlocks:
+    - Type: 0
+      Index: 5
+      Name: "\uB18D\uC5C5\uB2E8\uC9C0"
   - Name: "\uB18D\uC5C5\uB2E8\uC9C0"
     Description: "\uB18D\uC0B0\uBB3C\uC744 \uB300\uB7C9\uC73C\uB85C \uC0DD\uC0B0\uD569\uB2C8\uB2E4."
     FundCost: 75
@@ -109,6 +129,11 @@ MonoBehaviour:
     Requirements:
     - Type: 0
       Index: 4
+      Name: "\uACE1\uCC3D"
+    Unlocks:
+    - Type: 0
+      Index: 6
+      Name: "\uBAA9\uCD95\uC5C5\uB2E8\uC9C0"
   - Name: "\uBAA9\uCD95\uC5C5\uB2E8\uC9C0"
     Description: "\uAC00\uCD95\uC744 \uAE30\uB985\uB2C8\uB2E4."
     FundCost: 80
@@ -125,6 +150,11 @@ MonoBehaviour:
     Requirements:
     - Type: 0
       Index: 5
+      Name: "\uB18D\uC5C5\uB2E8\uC9C0"
+    Unlocks:
+    - Type: 0
+      Index: 7
+      Name: "\uC2DD\uB8CC\uD488\uC810"
   - Name: "\uC2DD\uB8CC\uD488\uC810"
     Description: "\uB2E4\uC591\uD55C \uC2DD\uD488\uACFC \uC77C\uC0C1 \uC6A9\uD488\uC744
       \uD310\uB9E4\uD558\uB294 \uC0C1\uC810\uC785\uB2C8\uB2E4."
@@ -142,6 +172,11 @@ MonoBehaviour:
     Requirements:
     - Type: 0
       Index: 6
+      Name: "\uBAA9\uCD95\uC5C5\uB2E8\uC9C0"
+    Unlocks:
+    - Type: 0
+      Index: 8
+      Name: "\uBE44\uB8CC\uACF5\uC7A5"
   - Name: "\uBE44\uB8CC\uACF5\uC7A5"
     Description: "\uBE44\uB8CC\uB97C \uC0DD\uC0B0\uD558\uC5EC \uB18D\uC5C5 \uC0DD\uC0C1\uB7C9\uC744
       \uC99D\uAC00\uC2DC\uD0B5\uB2C8\uB2E4."
@@ -159,6 +194,11 @@ MonoBehaviour:
     Requirements:
     - Type: 0
       Index: 7
+      Name: "\uC2DD\uB8CC\uD488\uC810"
+    Unlocks:
+    - Type: 0
+      Index: 9
+      Name: "\uB18D\uC0B0\uBB3C\uB958"
   - Name: "\uB18D\uC0B0\uBB3C\uB958"
     Description: "\uC2DD\uB7C9\uC744 \uC6D0\uD65C\uD558\uAC8C \uC720\uD1B5\uD569\uB2C8\uB2E4."
     FundCost: 200
@@ -175,6 +215,8 @@ MonoBehaviour:
     Requirements:
     - Type: 0
       Index: 8
+      Name: "\uBE44\uB8CC\uACF5\uC7A5"
+    Unlocks: []
   - Name: "\uD30C\uCD9C\uC18C"
     Description: "\uC9C0\uC5ED \uC548\uC804 \uBC0F \uCE58\uC548\uC744 \uC720\uC9C0\uD558\uB294
       \uC2DC\uC124\uC785\uB2C8\uB2E4."
@@ -190,3 +232,4 @@ MonoBehaviour:
     XPos: 2
     YPos: 0
     Requirements: []
+    Unlocks: []

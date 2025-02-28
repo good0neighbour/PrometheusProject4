@@ -16,19 +16,22 @@ public class TechElement
     public float Population = 0.0f;
     public byte XPos = 0;
     public byte YPos = 0;
-    public Requirement[] Requirements = null;
+    public ElementLink[] Requirements = null;
+    public ElementLink[] Unlocks = null;
 
 
     [Serializable]
-    public struct Requirement
+    public struct ElementLink
     {
         public TechTreeType Type;
         public byte Index;
+        public string Name;
 
-        public Requirement(TechTreeType type, byte index)
+        public ElementLink(TechTreeType type, byte index, string name)
         {
             Type = type;
             Index = index;
+            Name = name;
         }
     }
 }
