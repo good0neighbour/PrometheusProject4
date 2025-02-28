@@ -30,6 +30,7 @@ public class Exploration : MonoBehaviour
 
             // Cost
             PlayManager.Instance.Fund -= PlayManager.Instance.ExploreCost;
+            PlayMenuManager.Instance.FundUpdate();
 
             // Updates explorer text.
             _explorationNumText.text = $"{LanguageManager.Instance[TEX_EXPLORER]} {PlayManager.Instance.ExploreNum.ToString()}";
@@ -88,6 +89,16 @@ public class Exploration : MonoBehaviour
     }
 
 
+    private void OnLateYearChange()
+    {
+        if (gameObject.activeSelf)
+        {
+            // Cost check
+            CostCheck();
+        }
+    }
+
+
     private void Awake()
     {
         // Unity singleton pattern
@@ -99,12 +110,22 @@ public class Exploration : MonoBehaviour
     }
 
 
+    private void Start()
+    {
+        PlayManager.Instance.AddOnLateYearChange(OnLateYearChange);
+    }
+
+
+    private void OnEnable()
+    {
+        // Cost check
+        CostCheck();
+    }
+
+
     private void Update()
     {
         // Exploration progress
         _explorartionProgressBar.fillAmount = PlayManager.Instance.Explore / PlayManager.Instance.ExploreAmn;
-
-        // Cost check
-        CostCheck();
     }
 }

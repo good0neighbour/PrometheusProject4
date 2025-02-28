@@ -41,8 +41,20 @@
             "ConstName": "nuclear"
         },
         {
-            "Text": "새로운 토지를 발견했습니다.",
-            "ConstName": "mes_newland"
+            "Text": "비용",
+            "ConstName": "cost"
+        },
+        {
+            "Text": "수용량",
+            "ConstName": "capacity"
+        },
+        {
+            "Text": "인구",
+            "ConstName": "population"
+        },
+        {
+            "Text": "안정도",
+            "ConstName": "stability"
         },
         {
             "Text": "건축을 위한 기본 재료입니다.",
@@ -63,6 +75,14 @@
         {
             "Text": "에너지 생산 및 대량살상 무기를 제작하는 데 사용됩니다.",
             "ConstName": "des_nuclear"
+        },
+        {
+            "Text": "새로운 토지를 발견했습니다.",
+            "ConstName": "mes_newland"
+        },
+        {
+            "Text": "{0}이(가) 건설됐습니다.",
+            "ConstName": "mes_newcity"
         }
     ]
 }

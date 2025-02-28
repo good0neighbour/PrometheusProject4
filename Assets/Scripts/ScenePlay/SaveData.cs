@@ -5,5 +5,6 @@ using UnityEngine;
 public class SaveData : ScriptableObject
 {
     public PlayManager.PlayData Variables;
-    public List<Land> Lands;
+    public List<Land> Lands = null;
+    public List<City> Cities = null;
 }

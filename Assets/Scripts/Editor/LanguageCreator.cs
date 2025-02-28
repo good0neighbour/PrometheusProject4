@@ -89,7 +89,7 @@ public class LanguageCreator : EditorWindow
 
         // Current runtime language
         _serializedObject.Update();
-        PropertyField(_property, true, GUILayout.ExpandHeight(true));
+        PropertyField(_property, true);
         _serializedObject.ApplyModifiedProperties();
 
         // Language file info

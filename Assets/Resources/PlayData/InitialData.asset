@@ -15,11 +15,18 @@ MonoBehaviour:
   Variables:
     Year: 0
     Month: 1
-    Fund: 120
+    Fund: 1200
     Explore: 0
     ExploreCost: 10
     ExploreAmn: 1
     ExploreIncMlt: 3
     ExploreNum: 0
     ExploreSpdMlt: 0.1
+    CityCostSmall: 500
+    CityCostMiddle: 1800
+    CityCostLarge: 4000
+    CityCapaSmall: 200
+    CityCapaMiddle: 600
+    CityCapaLarge: 1200
   Lands: []
+  Cities: []

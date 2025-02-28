@@ -7,14 +7,18 @@ public partial class PlayManager : MonoBehaviour
 {
     /* ==================== Fields ==================== */
 
+    [Header("Tech Tree Data")]
+    [SerializeField] private TechTreeData _facilitiesData = null;
     [Header("Planet")]
     [SerializeField][Range(0.0f, -0.005f)] private float _surfaceRotation = -0.003125f;
     [SerializeField][Range(0.0f, -0.005f)] private float _cloudRotation = -0.0015625f;
     [SerializeField][Range(0.0f, 0.01f)] private float _lightRotation = 0.005f;
     private GameDelegate _onUpdate = null;
+    private GameDelegate _onLateUpdate = null;
     private GameDelegate _onMonthChange = null;
     private GameDelegate _onLateMonthChange = null;
     private GameDelegate _onYearChange = null;
+    private GameDelegate _onLateYearChange = null;
     private Material _planetMaterial = null;
     private PlayData _data = new PlayData();
     private float _planetSurfRot = 0.0f;
@@ -26,6 +30,8 @@ public partial class PlayManager : MonoBehaviour
 
     static public PlayManager Instance { get; private set; }
     public List<Land> Lands { get; private set; }
+    public List<City> Cities { get; private set; }
+    public TechTreeData FacilitiesData { get { return _facilitiesData; } }
     public float DeltaTime { get; private set; }
     public bool GamePause { get; private set; }
 
@@ -111,6 +117,16 @@ public partial class PlayManager : MonoBehaviour
 
 
     /// <summary>
+    /// Adds function to onLateUpdate delegate.
+    /// </summary>
+    /// <param name="onLateUpdate">Function to add</param>
+    public void AddOnLateUpdate(GameDelegate onLateUpdate)
+    {
+        _onLateUpdate += onLateUpdate;
+    }
+
+
+    /// <summary>
     /// Adds function to onMonthChange delegate.
     /// </summary>
     /// <param name="onMonthChange">Function to add</param>
@@ -140,6 +156,16 @@ public partial class PlayManager : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Adds function to onLateYearChange delegate.
+    /// </summary>
+    /// <param name="onLateYearChange">Function to add</param>
+    public void AddOnLateYearChange(GameDelegate onLateYearChange)
+    {
+        _onLateYearChange += onLateYearChange;
+    }
+
+
 
     /* ==================== Private Methods ==================== */
 
@@ -160,7 +186,11 @@ public partial class PlayManager : MonoBehaviour
     private void LoadPlayData()
     {
         SaveData data = Resources.Load<SaveData>("PlayData/InitialData");
+
+        // Data
         _data = data.Variables;
+
+        // Lands
         Lands = new List<Land>();
         if (data.Lands != null)
         {
@@ -171,6 +201,20 @@ public partial class PlayManager : MonoBehaviour
 
                 // Land list UI
                 Exploration.Instance.AddLand();
+            }
+        }
+
+        // Cities
+        Cities = new List<City>();
+        if (data.Cities != null)
+        {
+            for (ushort i = 0; i < data.Cities.Count; ++i)
+            {
+                // City add
+                Cities.Add(data.Cities[i]);
+
+                // City list UI
+                CitiesInfo.Instance.AddCity();
             }
         }
     }
@@ -221,6 +265,9 @@ public partial class PlayManager : MonoBehaviour
         // Delta time
         DeltaTime = Time.deltaTime * _gameSpeed;
 
+        // Update pass
+        _onUpdate?.Invoke();
+
         #region Time Pass
         if (_time >= MONTH_PER_SEC)
         {
@@ -237,6 +284,7 @@ public partial class PlayManager : MonoBehaviour
 
                 // Annual move
                 _onYearChange?.Invoke();
+                _onLateYearChange?.Invoke();
             }
             else
             {
@@ -266,14 +314,14 @@ public partial class PlayManager : MonoBehaviour
                 Exploration.Instance.AddLand();
 
                 // Show Message
-                MessageManager.Instance.EnqueueMessage("새로운 토지를 발견했습니다.");
+                MessageManager.Instance.EnqueueMessage(TEX_MES_NEWLAND);
             }
             _data.Explore += DeltaTime * _data.ExploreSpdMlt * _data.ExploreNum;
         }
         #endregion
 
         // Update pass
-        _onUpdate?.Invoke();
+        _onLateUpdate?.Invoke();
 
         // Planet rotation
         PlanetRotation();

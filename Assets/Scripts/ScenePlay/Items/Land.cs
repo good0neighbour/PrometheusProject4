@@ -10,6 +10,7 @@ public class Land
     public byte HeavyMetal { get; set; }
     public byte PreciousMetal { get; set; }
     public byte Nuclear { get; set; }
+    public byte City { get; set; }
 
 
     public Land RandomResources()
@@ -43,6 +44,8 @@ public class Land
                 loop = false;
             }
         }
+
+        City = byte.MaxValue;
 
         return this;
     }

@@ -33,6 +33,9 @@ public class PlayMenuManager : MonoBehaviour
     [SerializeField] private float _camSidePos = 1.0f;
     [SerializeField] private float _camMoveTime = 2.0f;
     [SerializeField] private float _camMovePow = 2.0f;
+    [Header("Bottom")]
+    [SerializeField] private TextMeshProUGUI _fundText = null;
+    [SerializeField] private TextMeshProUGUI _fundAmount = null;
     private StringBuilder _speedTextBuilder = new StringBuilder();
     private Coroutine _noiseCoroutine = null;
     private Coroutine _cameraCoroutine = null;
@@ -184,6 +187,13 @@ public class PlayMenuManager : MonoBehaviour
     }
 
 
+    public void FundUpdate()
+    {
+        _fundAmount.text = Mathf.RoundToInt(PlayManager.Instance.Fund).ToString();
+        StartCoroutine(CostAnim(_fundText, _fundAmount));
+    }
+
+
 
     /* ==================== Private Methods ==================== */
 
@@ -213,6 +223,12 @@ public class PlayMenuManager : MonoBehaviour
     private void OnLateMonthChange()
     {
         _dateText.text = $"{PlayManager.Instance.Year}{LanguageManager.Instance[TEX_YEAR]} {PlayManager.Instance.Month}{LanguageManager.Instance[TEX_MONTH]}";
+    }
+
+
+    private void OnLanguageChange()
+    {
+        OnLateMonthChange();
     }
 
 
@@ -284,6 +300,28 @@ public class PlayMenuManager : MonoBehaviour
     }
 
 
+    private IEnumerator CostAnim(TextMeshProUGUI targetText, TextMeshProUGUI targetAmount)
+    {
+        float time = 0.0f;
+
+        targetText.color = Color.white;
+        targetText.fontStyle = FontStyles.Bold;
+        targetAmount.color = Color.white;
+        targetAmount.fontStyle = FontStyles.Bold;
+
+        while (time < COST_ANIM_TIME)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        targetText.color = NORMALTEXT;
+        targetText.fontStyle = FontStyles.Normal;
+        targetAmount.color = NORMALTEXT;
+        targetAmount.fontStyle = FontStyles.Normal;
+    }
+
+
     private void Awake()
     {
         // Unity singletop pattern
@@ -305,9 +343,14 @@ public class PlayMenuManager : MonoBehaviour
             "_Colour",
             new Color(_normalBrightness, _normalBrightness, _normalBrightness, _noiseAlpha)
         );
+    }
 
-        // On month change
+
+    private void Start()
+    {
+        FundUpdate();
         PlayManager.Instance.AddOnLateMonthChange(OnLateMonthChange);
+        LanguageManager.Instance.AddOnLanguageChange(OnLanguageChange);
     }
 
 

@@ -20,8 +20,10 @@ public enum AudioType
     End
 }
 
-public enum GamePauseType
+
+public enum TechTreeType
 {
-    Pause = 1,
-    Resume = -1
+    Facilities,
+    Technologies,
+    Thoughts
 }

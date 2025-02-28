@@ -68,6 +68,24 @@ public class MessageManager : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Enqueues a message.
+    /// </summary>
+    /// <param name="content">Message to show</param>
+    /// <param name="replace">Word to replace</param>
+    public void EnqueueMessage(string content, params string[] replace)
+    {
+        // Replaces words.
+        for (byte i = 0; i < replace.Length; ++i)
+        {
+            content = content.Replace($"{{{i}}}", replace[i]);
+        }
+
+        // Enqueues modified content.
+        EnqueueMessage(content);
+    }
+
+
     public void StartMesBoxMoveCoroutine(sbyte direction)
     {
         if (_sectionMoveAnim != null)
@@ -112,7 +130,7 @@ public class MessageManager : MonoBehaviour
             {
                 if (_messageQueue.Count > 0)
                 {
-                    ShowMessage(_messageQueue.Peek());
+                    ShowMessage(_messageQueue.Dequeue());
 #if UNITY_EDITOR
                     Debug.Log("Queued message showed.");
 #endif

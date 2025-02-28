@@ -105,10 +105,7 @@ public class VariableCreator : EditorWindow
         {
             // Initial text
             StringBuilder builder = new StringBuilder(
-                "using System;\nusing System.Collections.Generic;\nusing UnityEngine;"
-            );
-            builder.Append(
-                "\n\npublic partial class PlayManager\n{"
+                "using System;\n\npublic partial class PlayManager\n{"
             );
 
             // Variables
@@ -133,7 +130,7 @@ public class VariableCreator : EditorWindow
                 "\n\t[Serializable]"
             );
             builder.Append(
-                $"\n\tprivate struct {_structureName}\n\t{{"
+                $"\n\tpublic struct {_structureName}\n\t{{"
             );
             for (ushort i = 0; i < _data.Count; ++i)
             {
@@ -192,8 +189,8 @@ public class VariableCreator : EditorWindow
     [Serializable]
     private struct VariableData
     {
-        public VarType Type;
         public string Name;
+        public VarType Type;
 
         public VariableData(VarType type, string name)
         {

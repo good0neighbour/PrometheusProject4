@@ -11,6 +11,7 @@ public class LandButton : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _resources = null;
     private Land _land = null;
     private byte _index = 0;
+    private bool _isLand = true;
 
 
 
@@ -19,7 +20,7 @@ public class LandButton : MonoBehaviour
     public void ButtonLand()
     {
         Exploration.Instance.SetActive(false);
-        LandScreen.Instance.ShowLandScreen(_land);
+        LandScreen.Instance.ShowLandScreen(_land, (byte)(_index + 1), this);
         PlayManager.Instance.SetGamePause(true);
         AudioManager.Instance.Play(AudioType.Touch);
     }
@@ -38,13 +39,27 @@ public class LandButton : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Sets city name on land button.
+    /// </summary>
+    /// <param name="name">The name of city</param>
+    public void SetCityName(string name)
+    {
+        _title.text = name;
+        _isLand = true;
+    }
+
+
 
     /* ==================== Private Methods ==================== */
 
     private void OnLanguageChange()
     {
         // Title
-        _title.text = $"{LanguageManager.Instance[TEX_LAND]} {(_index + 1).ToString()}";
+        if (_isLand)
+        {
+            _title.text = $"{LanguageManager.Instance[TEX_LAND]} {(_index + 1).ToString()}";
+        }
 
         // Info
         StringBuilder builder = new StringBuilder();
