@@ -30,6 +30,12 @@ public partial class PlayManager : MonoBehaviour
     public List<Land> Lands { get; private set; }
     public List<City> Cities { get; private set; }
     public float DeltaTime { get; private set; }
+    public int Stone { get { return StoneTotal - StoneUsage; } }
+    public int Iron { get { return IronTotal - IronUsage; } }
+    public int HeavyMetal { get { return HeavyMetalTotal - HeavyMetalUsage; } }
+    public int PreciousMetal { get { return PreciousMetalTotal - PreciousMetalUsage; } }
+    public int Nuclear { get { return NuclearTotal - NuclearUsage; } }
+    public int Electricity { get { return ElectricityTotal - ElectricityUsage; } }
     public bool GamePause { get; private set; }
 
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Text;
 using UnityEngine;
@@ -34,8 +35,7 @@ public class PlayMenuManager : MonoBehaviour
     [SerializeField] private float _camMoveTime = 2.0f;
     [SerializeField] private float _camMovePow = 2.0f;
     [Header("Bottom")]
-    [SerializeField] private TextMeshProUGUI _fundText = null;
-    [SerializeField] private TextMeshProUGUI _fundAmount = null;
+    [SerializeField] private BottomText[] _bottomInfo = null;
     private StringBuilder _speedTextBuilder = new StringBuilder();
     private Coroutine _noiseCoroutine = null;
     private Coroutine _cameraCoroutine = null;
@@ -187,10 +187,10 @@ public class PlayMenuManager : MonoBehaviour
     }
 
 
-    public void FundUpdate()
+    public void BottomInfoUpdate(BottomInfoType type)
     {
-        _fundAmount.text = Mathf.RoundToInt(PlayManager.Instance.Fund).ToString();
-        StartCoroutine(CostAnim(_fundText, _fundAmount));
+        _bottomInfo[(int)type].Amount.text = GetAmountText(type);
+        StartCoroutine(CostAnim(_bottomInfo[(int)type].Text, _bottomInfo[(int)type].Amount));
     }
 
 
@@ -217,6 +217,37 @@ public class PlayMenuManager : MonoBehaviour
         _PlayMenus[2].SetActive(right);
         _MenuButtons[0].SetActive(left);
         _MenuButtons[1].SetActive(right);
+    }
+
+
+    private string GetAmountText(BottomInfoType type)
+    {
+        switch (type)
+        {
+            case BottomInfoType.Fund:
+                return PlayManager.Instance.Fund.ToString("0");
+            case BottomInfoType.Research:
+                return PlayManager.Instance.Research.ToString("0");
+            case BottomInfoType.Culture:
+                return PlayManager.Instance.Culture.ToString("0");
+            case BottomInfoType.Electricity:
+                return PlayManager.Instance.Electricity.ToString();
+            case BottomInfoType.Stone:
+                return PlayManager.Instance.Stone.ToString();
+            case BottomInfoType.Iron:
+                return PlayManager.Instance.Iron.ToString();
+            case BottomInfoType.Heavy:
+                return PlayManager.Instance.HeavyMetal.ToString();
+            case BottomInfoType.Precious:
+                return PlayManager.Instance.PreciousMetal.ToString();
+            case BottomInfoType.Nuclear:
+                return PlayManager.Instance.Nuclear.ToString();
+            default:
+#if UNITY_EDITOR
+                Debug.LogError($"Unidentified type.\nPlayMenuManager, GetAmountText(BottomInfoType type), type: {type.ToString()}");
+#endif
+                return null;
+        }
     }
 
 
@@ -348,7 +379,10 @@ public class PlayMenuManager : MonoBehaviour
 
     private void Start()
     {
-        FundUpdate();
+        for (BottomInfoType i = 0; i < BottomInfoType.End; ++i)
+        {
+            BottomInfoUpdate(i);
+        }
         PlayManager.Instance.AddOnLateMonthChange(OnLateMonthChange);
         LanguageManager.Instance.AddOnLanguageChange(OnLanguageChange);
     }
@@ -385,5 +419,16 @@ public class PlayMenuManager : MonoBehaviour
                 ButtonSection(1);
             }
         }
+    }
+
+
+
+    /* ==================== Struct ==================== */
+
+    [Serializable]
+    private struct BottomText
+    {
+        public TextMeshProUGUI Text;
+        public TextMeshProUGUI Amount;
     }
 }

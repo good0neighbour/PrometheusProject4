@@ -1,3 +1,4 @@
+using System.Text;
 using UnityEngine;
 using UnityEditor;
 
@@ -24,6 +25,7 @@ public class GameManager
         }
     }
 
+    public StringBuilder Builder { get; private set; }
     public string Language { get; set; }
 
 
@@ -47,6 +49,7 @@ public class GameManager
 
     private GameManager()
     {
+        Builder = new StringBuilder();
         Language = "Korean";
     }
 }

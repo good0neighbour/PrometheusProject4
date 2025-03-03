@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml.Linq;
-using Unity.Android.Gradle;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
+using static Constants;
 using static UnityEditor.EditorGUILayout;
 
 [CustomEditor(typeof(TechTreeData))]
@@ -21,6 +21,7 @@ public class TechTreeDataEditor : Editor
     private byte _moveFrom = 0;
     private byte _moveTo = 0;
     private byte _addIndex = 0;
+    private byte _status = 0;
 
 
     private void OnEnable()
@@ -114,7 +115,36 @@ public class TechTreeDataEditor : Editor
 
         if (GUILayout.Button("Adopt all requirements from all tech tree data"))
         {
-            ApplyAllRequirements();
+            _status = ApplyAllRequirements();
+        }
+
+        if (GUILayout.Button("Create tech language file from all tech tree data"))
+        {
+            _status = CreateTechLanguage();
+            AssetDatabase.Refresh();
+        }
+
+        switch (_status)
+        {
+            case 1:
+                LabelField("Successfully adopted.");
+                break;
+                
+            case 2:
+                LabelField("Failed to adopt requirements.");
+                break;
+                
+            case 3:
+                LabelField("Successfully created Korean json file and translate file.");
+                break;
+                
+            case 4:
+                LabelField("Failed to create tech language files.");
+                break;
+
+            default:
+                LabelField("");
+                break;
         }
     }
 
@@ -413,41 +443,41 @@ public class TechTreeDataEditor : Editor
     private string GetCostText(byte index, out float height, float lineHeight)
     {
         _builder.Clear();
-        _builder.Append("[비용]");
+        _builder.Append($"[{TEX_COST}]");
         height = lineHeight;
         if (_elements[index].FundCost > 0.0f)
         {
-            _builder.Append($"\n자금 {_elements[index].FundCost.ToString("0")}");
+            _builder.Append($"\n{TEX_FUND} {_elements[index].FundCost.ToString("0")}");
             height += lineHeight;
         }
         if (_elements[index].ResearchCost > 0.0f)
         {
-            _builder.Append($"\n연구 {_elements[index].ResearchCost.ToString("0")}");
+            _builder.Append($"\n{TEX_RESEARCH} {_elements[index].ResearchCost.ToString("0")}");
             height += lineHeight;
         }
         if (_elements[index].CultureCost > 0.0f)
         {
-            _builder.Append($"\n문화 {_elements[index].CultureCost.ToString("0")}");
+            _builder.Append($"\n{TEX_CULTURE} {_elements[index].CultureCost.ToString("0")}");
             height += lineHeight;
         }
         if (_elements[index].StoneCost > 0)
         {
-            _builder.Append($"\n석제 {_elements[index].StoneCost.ToString()}");
+            _builder.Append($"\n{TEX_STONE} {_elements[index].StoneCost.ToString()}");
             height += lineHeight;
         }
         if (_elements[index].IronCost > 0)
         {
-            _builder.Append($"\n철 {_elements[index].IronCost.ToString()}");
+            _builder.Append($"\n{TEX_IRON} {_elements[index].IronCost.ToString()}");
             height += lineHeight;
         }
         if (_elements[index].NuclearCost > 0)
         {
-            _builder.Append($"\n핵물질 {_elements[index].NuclearCost.ToString()}");
+            _builder.Append($"\n{TEX_NUCLEAR} {_elements[index].NuclearCost.ToString()}");
             height += lineHeight;
         }
         if (_elements[index].Maintenance > 0)
         {
-            _builder.Append($"\n유지비용 {_elements[index].Maintenance.ToString()}");
+            _builder.Append($"\n{TEX_MAINTENANCE} {_elements[index].Maintenance.ToString()}");
             height += lineHeight;
         }
         return _builder.ToString();
@@ -457,16 +487,16 @@ public class TechTreeDataEditor : Editor
     private string GetIncomeText(byte index, out float height, float lineHeight)
     {
         _builder.Clear();
-        _builder.Append("[수익]");
+        _builder.Append($"[{TEX_INCOME}]");
         height = lineHeight;
         if (_elements[index].Electricity > 0)
         {
-            _builder.Append($"\n전력 {_elements[index].Electricity.ToString()}");
+            _builder.Append($"\n{TEX_ELECTRICITY} {_elements[index].Electricity.ToString()}");
             height += lineHeight;
         }
         if (_elements[index].Population > 0.0f)
         {
-            _builder.Append($"\n인구 변화 증가");
+            _builder.Append($"\n{TEX_POPMOV}");
             height += lineHeight;
         }
         return _builder.ToString();
@@ -570,56 +600,127 @@ public class TechTreeDataEditor : Editor
     }
 
 
-    private void ApplyAllRequirements()
+    private TechTreeData[] LoadAllTechTreeData()
     {
-        // Load
-        TechTreeData[] techTrees = new TechTreeData[1];
-        techTrees[0] = AssetDatabase.LoadAssetAtPath<TechTreeData>("Assets/Resources/TechTrees/Facilities.asset");
-
-        // Unlocks list
-        List<TechElement.ElementLink>[][] unlocks = new List<TechElement.ElementLink>[1][];
-        for (byte i = 0; i < techTrees.Length; ++i)
+        return new TechTreeData[]
         {
-            unlocks[i] = new List<TechElement.ElementLink>[techTrees[i].Elements.Length];
-            for (byte j = 0; j < techTrees[i].Elements.Length; ++j)
-            {
-                unlocks[i][j] = new List<TechElement.ElementLink>();
-            }
-        }
+            AssetDatabase.LoadAssetAtPath<TechTreeData>("Assets/Resources/TechTrees/Facilities.asset")
+        };
+    }
 
-        // Unlocks set
-        for (byte i = 0; i < techTrees.Length; ++i)
+
+    private byte ApplyAllRequirements()
+    {
+        try
         {
-            for (byte j = 0; j < techTrees[i].Elements.Length; ++j)
-            {
-                if (techTrees[i].Elements[j].Requirements == null)
-                {
-                    continue;
-                }
+            // Load
+            TechTreeData[] techTrees = LoadAllTechTreeData();
 
-                for (byte k = 0; k < techTrees[i].Elements[j].Requirements.Length; ++k)
+            // Unlocks list
+            List<TechElement.ElementLink>[][] unlocks = new List<TechElement.ElementLink>[1][];
+            for (byte i = 0; i < techTrees.Length; ++i)
+            {
+                unlocks[i] = new List<TechElement.ElementLink>[techTrees[i].Elements.Length];
+                for (byte j = 0; j < techTrees[i].Elements.Length; ++j)
                 {
-                    unlocks[(int)techTrees[i].Elements[j].Requirements[k].Type][techTrees[i].Elements[j].Requirements[k].Index].Add(
-                        new TechElement.ElementLink(
-                            (TechTreeType)i,
-                            j,
-                            techTrees[i].Elements[j].Name
-                        )
-                    );
+                    unlocks[i][j] = new List<TechElement.ElementLink>();
                 }
             }
-        }
 
-        // Unlocks adopt
-        for (byte i = 0; i < techTrees.Length; ++i)
-        {
-            for (byte j = 0; j < techTrees[i].Elements.Length; ++j)
+            // Unlocks set
+            for (byte i = 0; i < techTrees.Length; ++i)
             {
-                techTrees[i].Elements[j].Unlocks = unlocks[i][j].ToArray();
+                for (byte j = 0; j < techTrees[i].Elements.Length; ++j)
+                {
+                    if (techTrees[i].Elements[j].Requirements == null)
+                    {
+                        continue;
+                    }
+
+                    for (byte k = 0; k < techTrees[i].Elements[j].Requirements.Length; ++k)
+                    {
+                        unlocks[(int)techTrees[i].Elements[j].Requirements[k].Type][techTrees[i].Elements[j].Requirements[k].Index].Add(
+                            new TechElement.ElementLink(
+                                (TechTreeType)i,
+                                j,
+                                techTrees[i].Elements[j].Name
+                            )
+                        );
+                    }
+                }
             }
 
-            // Save
-            EditorUtility.SetDirty(techTrees[i]);
+            // Unlocks adopt
+            for (byte i = 0; i < techTrees.Length; ++i)
+            {
+                for (byte j = 0; j < techTrees[i].Elements.Length; ++j)
+                {
+                    techTrees[i].Elements[j].Unlocks = unlocks[i][j].ToArray();
+                }
+
+                // Save
+                EditorUtility.SetDirty(techTrees[i]);
+            }
+
+            return 1;
         }
+        catch
+        {
+            return 2;
+        }
+    }
+
+
+    private byte CreateTechLanguage()
+    {
+        try
+        {
+            // Load
+            TechTreeData[] techTrees = LoadAllTechTreeData();
+
+            // Gets words.
+            List<string> words = new List<string>();
+            foreach (TechTreeData data in techTrees)
+            {
+                foreach (TechElement element in data.Elements)
+                {
+                    words.Add(element.Name);
+                    words.Add(element.Description);
+                }
+            }
+
+            // To json
+            LanguageManager.LanguageJson json;
+            json.Words = CreateTranslateFile(words.ToArray());
+            File.WriteAllText(
+                $"{Application.dataPath}/Resources/Languages/KoreanTech.json",
+                JsonUtility.ToJson(json, true)
+            );
+
+            return 3;
+        }
+        catch
+        {
+            return 4;
+        }
+    }
+
+
+    private string[] CreateTranslateFile(string[] words)
+    {
+        // Builds content.
+        StringBuilder builder = new StringBuilder();
+        foreach (string text in words)
+        {
+            builder.Append($"{text}\n");
+        }
+
+        // Write
+        File.WriteAllText(
+            $"{Application.dataPath}/Data/Translates/TranslateTech.txt",
+            builder.ToString()
+        );
+
+        return words;
     }
 }

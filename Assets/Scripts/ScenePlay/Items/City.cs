@@ -14,6 +14,7 @@ public class City
     public float AnnualResearch { get; set; }
     public float AnnualCulture { get; set; }
     public float Stability { get; set; }
+    public TechStatus[] Facilites { get; set; }
 
 
     public City(string name, byte landIndex, ushort capacity)
@@ -21,5 +22,6 @@ public class City
         Name = name;
         Land = landIndex;
         Capacity = capacity;
+        PopulationMovement = 1.0f;
     }
 }

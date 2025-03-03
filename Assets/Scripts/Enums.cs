@@ -1,5 +1,5 @@
 #if UNITY_EDITOR
-public enum LanguageType
+public enum LanguageType : byte
 {
     Korean,
     English,
@@ -11,19 +11,44 @@ public enum LanguageType
 #endif
 
 
-public enum AudioType
+public enum AudioType : byte
 {
     Touch,
     Select,
     Unable,
     Alert,
+    Failed,
     End
 }
 
 
-public enum TechTreeType
+public enum BottomInfoType : byte
+{
+    Fund,
+    Research,
+    Culture,
+    Electricity,
+    Stone,
+    Iron,
+    Heavy,
+    Precious,
+    Nuclear,
+    End
+}
+
+
+public enum TechTreeType : byte
 {
     Facilities,
     Technologies,
-    Thoughts
+    Thoughts,
+    End
+}
+
+
+public enum TechStatus : byte
+{
+    Unavailable,
+    Available,
+    Adopted
 }

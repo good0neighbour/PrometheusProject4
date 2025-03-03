@@ -16,6 +16,15 @@ MonoBehaviour:
     Year: 0
     Month: 1
     Fund: 1200
+    Research: 0
+    Culture: 0
+    Stone: 0
+    Iron: 0
+    HeavyMetal: 0
+    PreciousMetal: 0
+    Nuclear: 0
+    FacilitySupportRate: 50
+    ResearchSupportRate: 50
     Explore: 0
     ExploreCost: 10
     ExploreAmn: 1

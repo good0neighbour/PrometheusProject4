@@ -62,6 +62,10 @@ public class LandScreen : MonoBehaviour
 
             // Cost
             PlayManager.Instance.Fund -= _cost;
+            PlayMenuManager.Instance.BottomInfoUpdate(BottomInfoType.Fund);
+
+            // Resources gain
+            ResourcesGain();
 
             // Button disable
             _cityBuildButton.SetActive(false);
@@ -325,6 +329,36 @@ public class LandScreen : MonoBehaviour
 
         // Next index
         ++_index;
+    }
+
+
+    private void ResourcesGain()
+    {
+        if (_land.Stone > 0)
+        {
+            PlayManager.Instance.StoneTotal += _land.Stone;
+            PlayMenuManager.Instance.BottomInfoUpdate(BottomInfoType.Stone);
+        }
+        if (_land.Iron > 0)
+        {
+            PlayManager.Instance.IronTotal += _land.Iron;
+            PlayMenuManager.Instance.BottomInfoUpdate(BottomInfoType.Iron);
+        }
+        if (_land.HeavyMetal > 0)
+        {
+            PlayManager.Instance.HeavyMetalTotal += _land.HeavyMetal;
+            PlayMenuManager.Instance.BottomInfoUpdate(BottomInfoType.Heavy);
+        }
+        if (_land.PreciousMetal > 0)
+        {
+            PlayManager.Instance.PreciousMetalTotal += _land.PreciousMetal;
+            PlayMenuManager.Instance.BottomInfoUpdate(BottomInfoType.Precious);
+        }
+        if (_land.Nuclear > 0)
+        {
+            PlayManager.Instance.NuclearTotal += _land.Nuclear;
+            PlayMenuManager.Instance.BottomInfoUpdate(BottomInfoType.Nuclear);
+        }
     }
 
 

@@ -17,9 +17,9 @@ public class CitiesInfo : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _stability = null;
     [Header("City List")]
     [SerializeField] private GameObject _cityList = null;
-    private City _curCity = null;
 
     static public CitiesInfo Instance { get; private set; }
+    public City CurrentCity { get; private set; }
 
 
 
@@ -27,11 +27,16 @@ public class CitiesInfo : MonoBehaviour
 
     public void ButtonFacilities()
     {
-        if (_curCity == null)
+        if (CurrentCity == null)
         {
             return;
         }
-        TechTreeScreen.Instance.ShowScreen(TechTreeType.Facilities);
+        TechTreeScreen.Instance.ShowScreen(
+            TechTreeType.Facilities,
+            PlayManager.Instance.FacilitySupportRate,
+            CurrentCity.Name
+        );
+        PlayManager.Instance.SetGamePause(true);
         AudioManager.Instance.Play(AudioType.Touch);
     }
 
@@ -57,13 +62,13 @@ public class CitiesInfo : MonoBehaviour
     public bool SwitchCityInfo(City city)
     {
         // Already selected.
-        if (_curCity == city)
+        if (CurrentCity == city)
         {
             return false;
         }
 
         // Switches city.
-        _curCity = city;
+        CurrentCity = city;
 
         // City name
         _title.text = city.Name;
@@ -72,7 +77,7 @@ public class CitiesInfo : MonoBehaviour
         OnLateMonthChange();
 
 #if UNITY_EDITOR
-        Debug.Log($"Showing city: {_curCity.Name}");
+        Debug.Log($"Showing city: {CurrentCity.Name}");
 #endif
 
         // Successfully switched.
@@ -87,14 +92,14 @@ public class CitiesInfo : MonoBehaviour
     {
         if (gameObject.activeSelf)
         {
-            _population.text = _curCity.Population.ToString("0");
-            _popMov.text = _curCity.PopulationMovement.ToString("0");
-            _crime.text = _curCity.Crime.ToString("0.00%");
-            _death.text = _curCity.Death.ToString("0.00%");
-            _fund.text = _curCity.AnnualFund.ToString("0");
-            _research.text = _curCity.AnnualResearch.ToString("0");
-            _culture.text = _curCity.AnnualCulture.ToString("0");
-            _stability.text = _curCity.Stability.ToString("0");
+            _population.text = CurrentCity.Population.ToString("0");
+            _popMov.text = CurrentCity.PopulationMovement.ToString("0");
+            _crime.text = CurrentCity.Crime.ToString("0.00%");
+            _death.text = CurrentCity.Death.ToString("0.00%");
+            _fund.text = CurrentCity.AnnualFund.ToString("0");
+            _research.text = CurrentCity.AnnualResearch.ToString("0");
+            _culture.text = CurrentCity.AnnualCulture.ToString("0");
+            _stability.text = CurrentCity.Stability.ToString("0");
         }
     }
 
@@ -115,10 +120,10 @@ public class CitiesInfo : MonoBehaviour
 
     private void OnEnable()
     {
-        if (_curCity == null)
+        if (CurrentCity == null)
         {
-            _curCity = PlayManager.Instance.Cities[0];
-            _title.text = _curCity.Name;
+            CurrentCity = PlayManager.Instance.Cities[0];
+            _title.text = CurrentCity.Name;
         }
         OnLateMonthChange();
     }

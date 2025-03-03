@@ -30,7 +30,7 @@ public class Exploration : MonoBehaviour
 
             // Cost
             PlayManager.Instance.Fund -= PlayManager.Instance.ExploreCost;
-            PlayMenuManager.Instance.FundUpdate();
+            PlayMenuManager.Instance.BottomInfoUpdate(BottomInfoType.Fund);
 
             // Updates explorer text.
             _explorationNumText.text = $"{LanguageManager.Instance[TEX_EXPLORER]} {PlayManager.Instance.ExploreNum.ToString()}";

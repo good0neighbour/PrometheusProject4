@@ -417,6 +417,13 @@ public class LanguageCreator : EditorWindow
                 PrintLanguageFileStatus(_curTras, i.ToString(), "Runtime.txt", maxWidth);
                 PrintLanguageFileStatus(_curLans, i.ToString(), "Runtime.json", maxWidth);
                 EndHorizontal();
+
+                // Tech language file
+                BeginHorizontal();
+                LabelField($"{i.ToString()}Tech", GUILayout.MaxWidth(maxWidth), GUILayout.ExpandWidth(false));
+                PrintLanguageFileStatus(_curTras, i.ToString(), "Tech.txt", maxWidth);
+                PrintLanguageFileStatus(_curLans, i.ToString(), "Tech.json", maxWidth);
+                EndHorizontal();
             }
         }
     }

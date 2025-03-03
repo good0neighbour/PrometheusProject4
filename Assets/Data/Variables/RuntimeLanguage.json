@@ -17,6 +17,14 @@
             "ConstName": "fund"
         },
         {
+            "Text": "연구",
+            "ConstName": "research"
+        },
+        {
+            "Text": "문화",
+            "ConstName": "culture"
+        },
+        {
             "Text": "토지",
             "ConstName": "land"
         },
@@ -41,8 +49,24 @@
             "ConstName": "nuclear"
         },
         {
+            "Text": "전력",
+            "ConstName": "electricity"
+        },
+        {
+            "Text": "인구 증가",
+            "ConstName": "popMov"
+        },
+        {
             "Text": "비용",
             "ConstName": "cost"
+        },
+        {
+            "Text": "수익",
+            "ConstName": "income"
+        },
+        {
+            "Text": "유지비용",
+            "ConstName": "maintenance"
         },
         {
             "Text": "수용량",
@@ -55,6 +79,14 @@
         {
             "Text": "안정도",
             "ConstName": "stability"
+        },
+        {
+            "Text": "정책 성공",
+            "ConstName": "success"
+        },
+        {
+            "Text": "정책 실패",
+            "ConstName": "failed"
         },
         {
             "Text": "건축을 위한 기본 재료입니다.",
